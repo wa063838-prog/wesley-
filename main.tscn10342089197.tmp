@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://2m34q7fd0i4n"]
+
+[ext_resource type="Script" uid="uid://bakhgsrrv8fns" path="res://player.gd" id="1_ig7tw"]
+[ext_resource type="Texture2D" uid="uid://cp4odc81ma1rj" path="res://FB_IMG_1748681242858.jpg" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://bk203layg0tjf" path="res://bullet.tscn" id="2_1bvp3"]
+[ext_resource type="Texture2D" uid="uid://btqtstn68tmwy" path="res://gorila.jpg" id="3_h2yge"]
+[ext_resource type="Script" uid="uid://bsmynxvw47344" path="res://enemyspawner.gd" id="5_lquwl"]
+[ext_resource type="PackedScene" uid="uid://4p1er60e32nd" path="res://enemy.tscn" id="6_272bh"]
+[ext_resource type="Texture2D" uid="uid://btov6jvmr7th2" path="res://heart_full.jpg" id="7_272bh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0xm2m"]
+size = Vector2(1000, 1450)
+
+[node name="main" type="Node2D" unique_id=1561021030]
+scale = Vector2(0.1, 0.1)
+
+[node name="player" type="CharacterBody2D" parent="." unique_id=1022270226 groups=["player"]]
+script = ExtResource("1_ig7tw")
+bullet_scene = ExtResource("2_1bvp3")
+
+[node name="Sprite2D" type="Sprite2D" parent="player" unique_id=184846701]
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_0xm2m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="player" unique_id=573489634]
+scale = Vector2(0.99999946, 0.99999946)
+shape = SubResource("RectangleShape2D_0xm2m")
+
+[node name="Weapon" type="Node2D" parent="player" unique_id=1566769758]
+
+[node name="Sprite2D" type="Sprite2D" parent="player/Weapon" unique_id=299830657]
+position = Vector2(590, 280)
+scale = Vector2(2, 2)
+texture = ExtResource("3_h2yge")
+
+[node name="Camera2D" type="Camera2D" parent="player" unique_id=374346362]
+position_smoothing_enabled = true
+position_smoothing_speed = 4.0
+
+[node name="enemyspawner" type="Node2D" parent="." unique_id=135176249 groups=["player"]]
+script = ExtResource("5_lquwl")
+enemy_scene = ExtResource("6_272bh")
+
+[node name="ui" type="CanvasLayer" parent="." unique_id=1834942003]
+
+[node name="health_bar" type="ProgressBar" parent="ui" unique_id=769889137]
+custom_minimum_size = Vector2(300, 30)
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 24.0
+offset_bottom = 47.0
+max_value = 3.0
+value = 3.0
+show_percentage = false
+
+[node name="hearts" type="HBoxContainer" parent="ui" unique_id=1141570614]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="TextureRect" parent="ui/hearts" unique_id=1535704476]
+layout_mode = 2
+texture = ExtResource("7_272bh")
+
+[node name="TextureRect2" type="TextureRect" parent="ui/hearts" unique_id=204851195]
+layout_mode = 2
+texture = ExtResource("7_272bh")
+
+[node name="TextureRect3" type="TextureRect" parent="ui/hearts" unique_id=1132326964]
+layout_mode = 2
+texture = ExtResource("7_272bh")

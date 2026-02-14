@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://2m34q7fd0i4n"]
+
+[ext_resource type="Script" uid="uid://bakhgsrrv8fns" path="res://player.gd" id="1_ig7tw"]
+[ext_resource type="Texture2D" uid="uid://cp4odc81ma1rj" path="res://FB_IMG_1748681242858.jpg" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://bk203layg0tjf" path="res://bullet.tscn" id="2_1bvp3"]
+[ext_resource type="Texture2D" uid="uid://btqtstn68tmwy" path="res://gorila.jpg" id="3_h2yge"]
+[ext_resource type="Script" uid="uid://bsmynxvw47344" path="res://enemyspawner.gd" id="5_lquwl"]
+[ext_resource type="PackedScene" uid="uid://4p1er60e32nd" path="res://enemy.tscn" id="6_272bh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0xm2m"]
+
+[node name="main" type="Node2D" unique_id=1561021030]
+scale = Vector2(0.1, 0.1)
+
+[node name="player" type="CharacterBody2D" parent="." unique_id=1022270226 groups=["player"]]
+script = ExtResource("1_ig7tw")
+bullet_scene = ExtResource("2_1bvp3")
+
+[node name="Sprite2D" type="Sprite2D" parent="player" unique_id=184846701]
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_0xm2m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="player" unique_id=573489634]
+shape = SubResource("RectangleShape2D_0xm2m")
+
+[node name="Weapon" type="Node2D" parent="player" unique_id=1566769758]
+
+[node name="Sprite2D" type="Sprite2D" parent="player/Weapon" unique_id=299830657]
+position = Vector2(639.99994, 39.999996)
+scale = Vector2(2, 2)
+texture = ExtResource("3_h2yge")
+
+[node name="Camera2D" type="Camera2D" parent="player" unique_id=374346362]
+position_smoothing_enabled = true
+position_smoothing_speed = 4.0
+
+[node name="enemyspawner" type="Node2D" parent="." unique_id=135176249 groups=["player"]]
+script = ExtResource("5_lquwl")
+enemy_scene = ExtResource("6_272bh")
