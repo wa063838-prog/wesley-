@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://cho2haaew4upj"]
+
+[ext_resource type="Texture2D" uid="uid://gjnuq5pqwpmi" path="res://heart_full.png" id="1_cixvg"]
+
+[node name="TextureRect" type="TextureRect" unique_id=1759663825]
+custom_minimum_size = Vector2(54, 54)
+offset_right = 80.0
+offset_bottom = 80.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource("1_cixvg")
+expand_mode = 2
+stretch_mode = 5

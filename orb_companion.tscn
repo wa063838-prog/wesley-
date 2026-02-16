@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://cecqhlteamnua"]
+
+[ext_resource type="Script" uid="uid://bm8dv3hgirrrr" path="res://orb_companion.gd" id="1_4yftk"]
+[ext_resource type="Texture2D" uid="uid://yp3vwfgi51sn" path="res://orb_companion.png" id="2_amx7x"]
+[ext_resource type="PackedScene" uid="uid://bk203layg0tjf" path="res://bullet.tscn" id="2_tg63q"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_amx7x"]
+radius = 283.78
+height = 1024.0
+
+[node name="Area2D" type="Area2D" unique_id=1384774845]
+script = ExtResource("1_4yftk")
+bullet_scene = ExtResource("2_tg63q")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1303823523]
+texture = ExtResource("2_amx7x")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=308592144]
+shape = SubResource("CapsuleShape2D_amx7x")

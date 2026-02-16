@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://tm7im1kkm6ii"]
+
+[ext_resource type="Script" uid="uid://df8nr3yseuecd" path="res://LevelUpUI.gd" id="1_v2lfg"]
+
+[node name="CanvasLayer" type="CanvasLayer" unique_id=505115306]
+script = ExtResource("1_v2lfg")
+
+[node name="Panel" type="Panel" parent="." unique_id=646136222]
+modulate = Color(0, 0, 0, 0.003921569)
+self_modulate = Color(0, 0, 0, 0.003921569)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel" unique_id=1668274001]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Button" type="Button" parent="Panel/HBoxContainer" unique_id=1385969862]
+layout_mode = 2
+
+[node name="Button2" type="Button" parent="Panel/HBoxContainer" unique_id=1305924418]
+layout_mode = 2
+
+[node name="Button3" type="Button" parent="Panel/HBoxContainer" unique_id=178736304]
+layout_mode = 2
+
+[connection signal="pressed" from="Panel/HBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Panel/HBoxContainer/Button2" to="." method="_on_button_2_pressed"]
+[connection signal="pressed" from="Panel/HBoxContainer/Button3" to="." method="_on_button_3_pressed"]
