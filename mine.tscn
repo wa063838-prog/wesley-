@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://cnomop160xlwf"]
+
+[ext_resource type="Script" uid="uid://cc8g1psdrb1yf" path="res://mine.gd" id="1_iuis7"]
+[ext_resource type="Texture2D" uid="uid://olm8x55qcha8" path="res://download.jpg" id="2_i6hay"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_i213m"]
+radius = 1273.9047
+
+[node name="Area2D" type="Area2D" unique_id=972927124]
+collision_layer = 2
+collision_mask = 8
+script = ExtResource("1_iuis7")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1819040353]
+position = Vector2(1.66893e-06, 3.5762787e-07)
+scale = Vector2(0.12444446, 0.12444445)
+texture = ExtResource("2_i6hay")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=221308665]
+shape = SubResource("CircleShape2D_i213m")

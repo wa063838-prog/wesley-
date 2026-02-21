@@ -1,0 +1,89 @@
+[gd_scene format=3 uid="uid://d1wihlulo38hs"]
+
+[ext_resource type="Script" uid="uid://bmj5tvcykpigl" path="res://EscolhaPersonagem.gd" id="1_mlxeo"]
+[ext_resource type="Resource" uid="uid://bqab14d64bdsb" path="res://data/characters/tank.tres" id="2_wjkfx"]
+[ext_resource type="Resource" uid="uid://cc6dan58pe0v1" path="res://data/characters/speed.tres" id="3_4601s"]
+[ext_resource type="Texture2D" uid="uid://pitgg3jiwt02" path="res://assets/icons/characters/tank.jpg" id="4_17ht3"]
+[ext_resource type="Texture2D" uid="uid://cu1ntcc55q2r5" path="res://assets/icons/characters/speed.jpg" id="5_1f87o"]
+[ext_resource type="Texture2D" uid="uid://b6mnbnoqfgdtu" path="res://assets/icons/characters/padrao.jpg" id="6_20o0x"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_npc8n"]
+load_path = "res://.godot/imported/padrao.jpg-67038c5076d3ea6658a47eaaa78cac34.ctex"
+
+[node name="EscolhaPersonagem" type="Control" unique_id=1424716795]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1901.0
+offset_bottom = 939.0
+script = ExtResource("1_mlxeo")
+tank = ExtResource("2_wjkfx")
+speed_char = ExtResource("3_4601s")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1254372993]
+layout_mode = 0
+offset_left = 216.0
+offset_top = 1.0
+offset_right = 450.0
+offset_bottom = 100.0
+
+[node name="Escolha o Persongem" type="Label" parent="VBoxContainer" unique_id=1571714951]
+layout_mode = 2
+
+[node name="Tank" type="TextureButton" parent="VBoxContainer/Escolha o Persongem" unique_id=1946470263]
+layout_mode = 0
+offset_left = -139.99998
+offset_top = 235.0
+offset_right = 660.0
+offset_bottom = 1273.0
+scale = Vector2(0.1, 0.1)
+texture_normal = ExtResource("4_17ht3")
+texture_pressed = ExtResource("4_17ht3")
+texture_hover = ExtResource("4_17ht3")
+texture_disabled = ExtResource("4_17ht3")
+
+[node name="Speed" type="TextureButton" parent="VBoxContainer/Escolha o Persongem" unique_id=1639879722]
+layout_mode = 0
+offset_left = -142.0
+offset_top = 94.0
+offset_right = 370.0
+offset_bottom = 862.0
+scale = Vector2(0.1, 0.1)
+texture_normal = ExtResource("5_1f87o")
+texture_pressed = ExtResource("5_1f87o")
+texture_hover = ExtResource("5_1f87o")
+texture_disabled = ExtResource("5_1f87o")
+
+[node name="Padrao" type="TextureButton" parent="VBoxContainer/Escolha o Persongem" unique_id=909060905]
+layout_mode = 0
+offset_left = -133.0
+offset_top = 421.0
+offset_right = 556.99994
+offset_bottom = 1381.0
+scale = Vector2(0.1, 0.1)
+texture_normal = ExtResource("6_20o0x")
+texture_pressed = ExtResource("6_20o0x")
+texture_hover = SubResource("CompressedTexture2D_npc8n")
+texture_disabled = ExtResource("6_20o0x")
+
+[node name="Começar" type="Button" parent="VBoxContainer/Escolha o Persongem" unique_id=794497959]
+layout_mode = 0
+offset_left = 927.0
+offset_top = 639.0
+offset_right = 1050.0
+offset_bottom = 704.0
+text = "COMEÇAR"
+expand_icon = true
+
+[node name="voltar" type="Button" parent="VBoxContainer/Escolha o Persongem" unique_id=1336485688]
+layout_mode = 0
+offset_left = -205.0
+offset_top = 680.0
+offset_right = -146.0
+offset_bottom = 711.0
+text = "voltar"
+
+[connection signal="pressed" from="VBoxContainer/Escolha o Persongem/Tank" to="." method="_on_tank_pressed"]
+[connection signal="pressed" from="VBoxContainer/Escolha o Persongem/Speed" to="." method="_on_speed_pressed"]
+[connection signal="pressed" from="VBoxContainer/Escolha o Persongem/Padrao" to="." method="_on_padrão_pressed"]
+[connection signal="pressed" from="VBoxContainer/Escolha o Persongem/Começar" to="." method="_on_começar_pressed"]
+[connection signal="pressed" from="VBoxContainer/Escolha o Persongem/voltar" to="." method="_on_voltar_pressed"]

@@ -1,35 +1,37 @@
 [gd_scene format=3 uid="uid://4p1er60e32nd"]
 
 [ext_resource type="Script" uid="uid://b15s2iq2ikuug" path="res://enemy.gd" id="1_4gyqm"]
-[ext_resource type="Texture2D" uid="uid://olm8x55qcha8" path="res://download.jpg" id="1_7k104"]
+[ext_resource type="Texture2D" uid="uid://ry71qm4o1ebs" path="res://download - 2026-01-02T211606.917.png" id="2_4gyqm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4gyqm"]
-size = Vector2(1127, 1118)
+size = Vector2(840, 1166.6663)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qi2p4"]
-size = Vector2(1127, 1113.8613)
+size = Vector2(846.66705, 1166.666)
 
-[node name="enemy" type="CharacterBody2D" unique_id=850734155 groups=["enemy"]]
+[node name="enemy" type="Node2D" unique_id=1378946546 groups=["enemy"]]
+visibility_layer = 9
 position = Vector2(400, 300)
-collision_layer = 2
-collision_mask = 0
+scale = Vector2(0.15, 0.15)
 script = ExtResource("1_4gyqm")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=233594300 groups=["enemy"]]
-scale = Vector2(5, 5)
-texture = ExtResource("1_7k104")
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=21749270 groups=["enemy"]]
+light_mask = 1022
+visibility_layer = 1022
+position = Vector2(0, 43.33313)
 shape = SubResource("RectangleShape2D_4gyqm")
 debug_color = Color(0.8365947, 0.35144952, 0.4364019, 0.41960785)
 
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=146609192]
+texture = ExtResource("2_4gyqm")
+
 [node name="DamageArea" type="Area2D" parent="." unique_id=1717078441]
-scale = Vector2(1.01, 1.01)
 collision_layer = 8
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea" unique_id=912738919]
-position = Vector2(0, 0.49502563)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea" unique_id=912738919 groups=["enemy"]]
+light_mask = 1022
+visibility_layer = 1022
+position = Vector2(-3.3327637, 43.332886)
 shape = SubResource("RectangleShape2D_qi2p4")
 
-[connection signal="body_entered" from="DamageArea" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="DamageArea" to="." method="_on_damage_area_body_entered"]

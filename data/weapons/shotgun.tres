@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3 uid="uid://iwnykiiulftw"]
+
+[ext_resource type="Script" uid="uid://d1kn1gr61nuxs" path="res://data/weapon_data.gd" id="1_euj80"]
+[ext_resource type="PackedScene" uid="uid://bk203layg0tjf" path="res://bullet.tscn" id="1_k642q"]
+[ext_resource type="Texture2D" uid="uid://dhnds2f00ddbl" path="res://assets/icons/weapons/shotgun.jpg" id="2_yhlrr"]
+
+[resource]
+script = ExtResource("1_euj80")
+name = "Doze"
+icon = ExtResource("2_yhlrr")
+bullet_scene = ExtResource("1_k642q")
+cooldown = 0.3
+damage = 2.0
+projectile_count = 6
+spread_degrees = 25.0
+weapon_texture = ExtResource("2_yhlrr")
+mag_size = 2
+reload_time = 1.1
+metadata/_custom_type_script = "uid://d1kn1gr61nuxs"

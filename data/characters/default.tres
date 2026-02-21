@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3 uid="uid://c6ahft5gupgn2"]
+
+[ext_resource type="Script" uid="uid://dymqqde6m6odx" path="res://data/character_data.gd" id="1_dcw1w"]
+[ext_resource type="Texture2D" uid="uid://bf2cem1tnaqpa" path="res://assets/icons/characters/padrao.jpg" id="1_irtnf"]
+
+[resource]
+script = ExtResource("1_dcw1w")
+sprite_texture = ExtResource("1_irtnf")
+name = "padrao"
+icon = ExtResource("1_irtnf")
+metadata/_custom_type_script = "uid://dymqqde6m6odx"

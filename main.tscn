@@ -2,39 +2,21 @@
 
 [ext_resource type="Script" uid="uid://bakhgsrrv8fns" path="res://player.gd" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://bk203layg0tjf" path="res://bullet.tscn" id="2_1bvp3"]
-[ext_resource type="Texture2D" uid="uid://b3tpn6n6lihja" path="res://gorila.jpg" id="3_h2yge"]
+[ext_resource type="Resource" uid="uid://iwnykiiulftw" path="res://data/weapons/shotgun.tres" id="2_ycdy4"]
 [ext_resource type="PackedScene" uid="uid://cle4j7r4vq32n" path="res://levelUpUI.tscn" id="3_kek77"]
+[ext_resource type="Resource" uid="uid://c6ahft5gupgn2" path="res://data/characters/default.tres" id="3_ycdy4"]
 [ext_resource type="PackedScene" uid="uid://cho2haaew4upj" path="res://heart.tscn" id="4_4c57u"]
-[ext_resource type="Texture2D" uid="uid://b6mnbnoqfgdtu" path="res://FB_IMG_1748681242858.jpg" id="4_kek77"]
 [ext_resource type="PackedScene" uid="uid://cecqhlteamnua" path="res://orb_companion.tscn" id="5_4c57u"]
 [ext_resource type="Script" uid="uid://bsmynxvw47344" path="res://enemyspawner.gd" id="5_lquwl"]
-[ext_resource type="Script" uid="uid://b15s2iq2ikuug" path="res://enemy.gd" id="6_5vw27"]
-[ext_resource type="Texture2D" uid="uid://olm8x55qcha8" path="res://download.jpg" id="7_kek77"]
+[ext_resource type="Texture2D" uid="uid://bf2cem1tnaqpa" path="res://assets/icons/characters/padrao.jpg" id="8_w48qg"]
+[ext_resource type="PackedScene" uid="uid://cnomop160xlwf" path="res://mine.tscn" id="8_ycdy4"]
+[ext_resource type="Texture2D" uid="uid://dhnds2f00ddbl" path="res://assets/icons/weapons/shotgun.jpg" id="9_w48qg"]
+[ext_resource type="PackedScene" uid="uid://4p1er60e32nd" path="res://enemy.tscn" id="11_dg77c"]
+[ext_resource type="Script" uid="uid://yycnccsglj2a" path="res://DebugLabel.gd" id="11_efxa6"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kek77"]
 radius = 490.0003
 height = 1420.0009
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_4gyqm"]
-size = Vector2(1127, 1118)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_qi2p4"]
-size = Vector2(1127, 1113.8613)
-
-[sub_resource type="PackedScene" id="PackedScene_4c57u"]
-_bundled = {
-"conn_count": 2,
-"conns": PackedInt32Array(1073741829, 1073741828, 26, 25, 2, 0, 0, 1073741831, 1073741830, 28, 27, 2, 0, 0),
-"editable_instances": [],
-"id_paths": [PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array()],
-"names": PackedStringArray("enemy", "CharacterBody2D", "enemy", "position", "collision_layer", "collision_mask", "script", "Sprite2D", "Sprite2D", "enemy", "scale", "texture", "CollisionShape2D", "CollisionShape2D", "enemy", "shape", "debug_color", "DamageArea", "Area2D", "scale", "collision_layer", "CollisionShape2D", "CollisionShape2D", "position", "shape", "_on_area_2d_body_entered", "body_entered", "_on_damage_area_body_entered", "body_entered"),
-"node_count": 5,
-"node_ids": PackedInt32Array(850734155, 233594300, 21749270, 1717078441, 912738919),
-"node_paths": [NodePath("."), NodePath("."), NodePath("."), NodePath("./DamageArea"), NodePath("."), NodePath("DamageArea"), NodePath("."), NodePath("DamageArea")],
-"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 4, 3, 0, 4, 1, 5, 2, 6, 3, 1, 2, 1073741824, 0, 8, 7, -1, 2, 10, 4, 11, 5, 1, 9, 1073741825, 0, 13, 12, -1, 2, 15, 6, 16, 7, 1, 14, 1073741826, 0, 18, 17, -1, 2, 19, 8, 20, 9, 0, 1073741827, 0, 22, 21, -1, 2, 23, 10, 24, 11, 0),
-"variants": [Vector2(400, 300), 2, 0, ExtResource("6_5vw27"), Vector2(5, 5), ExtResource("7_kek77"), SubResource("RectangleShape2D_4gyqm"), Color(0.8365947, 0.35144952, 0.4364019, 0.41960785), Vector2(1.01, 1.01), 8, Vector2(0, 0.49502563), SubResource("RectangleShape2D_qi2p4")],
-"version": 3
-}
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_272bh"]
 bg_color = Color(0.12941177, 0.03137255, 0.75686276, 1)
@@ -68,27 +50,27 @@ outline_size = 15
 outline_color = Color(0, 0, 0, 1)
 
 [node name="main" type="Node2D" unique_id=1561021030]
-scale = Vector2(0.1, 0.1)
 
 [node name="player" type="CharacterBody2D" parent="." unique_id=1022270226 node_paths=PackedStringArray("hit_flash", "xp_bar", "level_label") groups=["player"]]
+process_mode = 3
+scale = Vector2(0.1, 0.1)
 collision_mask = 0
 script = ExtResource("1_ig7tw")
+preview_weapon = ExtResource("2_ycdy4")
+preview_character = ExtResource("3_ycdy4")
 bullet_scene = ExtResource("2_1bvp3")
-max_health = null
-speed = null
-invincibility_time = null
-knockback_force = null
-knockback_decay = null
 hit_flash = NodePath("../ui/HitFlash")
 xp_bar = NodePath("../ui/XPBar")
 level_label = NodePath("../ui/LevelLabel")
 levelup_ui_scene = ExtResource("3_kek77")
 heart_scene = ExtResource("4_4c57u")
 orb_scene = ExtResource("5_4c57u")
+mine_scene = ExtResource("8_ycdy4")
 
-[node name="Sprite2D" type="Sprite2D" parent="player" unique_id=184846701]
-scale = Vector2(1.5, 1.5)
-texture = ExtResource("4_kek77")
+[node name="Sprite2D" type="Sprite2D" parent="player" unique_id=420493677]
+position = Vector2(-65.04819, -110.07178)
+scale = Vector2(1.1913182, 1.2293162)
+texture = ExtResource("8_w48qg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="player" unique_id=573489634]
 position = Vector2(-1.5258789e-05, 0)
@@ -96,11 +78,13 @@ scale = Vector2(0.99999946, 0.99999946)
 shape = SubResource("CapsuleShape2D_kek77")
 
 [node name="Weapon" type="Node2D" parent="player" unique_id=1566769758]
+rotation = 2.0647423
+scale = Vector2(1, -1)
 
 [node name="Sprite2D" type="Sprite2D" parent="player/Weapon" unique_id=299830657]
-position = Vector2(440, 170)
-scale = Vector2(2, 2)
-texture = ExtResource("3_h2yge")
+position = Vector2(678.77893, 47.42285)
+rotation = -1.6161749
+texture = ExtResource("9_w48qg")
 
 [node name="Camera2D" type="Camera2D" parent="player" unique_id=374346362]
 zoom = Vector2(0.6, 0.6)
@@ -109,24 +93,29 @@ position_smoothing_speed = 4.0
 
 [node name="enemyspawner" type="Node2D" parent="." unique_id=135176249 groups=["player"]]
 script = ExtResource("5_lquwl")
-enemy_scene = SubResource("PackedScene_4c57u")
+enemy_scene = ExtResource("11_dg77c")
 
 [node name="ui" type="CanvasLayer" parent="." unique_id=1834942003]
 
 [node name="hearts" type="HBoxContainer" parent="ui" unique_id=1141570614]
-offset_left = 20.0
-offset_top = 20.0
-offset_right = 20.0
-offset_bottom = 220.0
+offset_left = 4.0
+offset_top = 9.0
+offset_right = 440.0
+offset_bottom = 57.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_constants/separation = 5
 alignment = 1
 
 [node name="HitFlash" type="ColorRect" parent="ui" unique_id=25701212]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.9607843, 0, 0.101960786, 0.4745098)
@@ -164,3 +153,16 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 16
 label_settings = SubResource("LabelSettings_5vw27")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1544530915]
+script = ExtResource("11_efxa6")
+
+[node name="DebugLabel" type="Label" parent="CanvasLayer" unique_id=1127557380]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -41.0
+offset_top = 1.0
+offset_right = -1.0
+offset_bottom = 24.0
+grow_horizontal = 0

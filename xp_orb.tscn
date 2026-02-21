@@ -10,11 +10,11 @@ collision_layer = 2
 script = ExtResource("1_fb8i0")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1340362037]
-scale = Vector2(0.3, 0.3)
+position = Vector2(0, -0.49999952)
+scale = Vector2(0.023529412, 0.024959743)
 texture = ExtResource("2_l6cv7")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=24548432]
-scale = Vector2(37, 37)
 shape = SubResource("CapsuleShape2D_fb8i0")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

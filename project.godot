@@ -11,9 +11,21 @@ config_version=5
 [application]
 
 config/name="tente_sobreviver"
-run/main_scene="uid://2m34q7fd0i4n"
+run/main_scene="uid://b84l7tcx56jon"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+EnemyManager="*uid://cg5coippcdbm"
+RunData="*uid://dr2d8i2teoq2s"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/vsync/vsync_mode=0
 
 [input]
 

@@ -1,0 +1,91 @@
+[gd_scene format=3 uid="uid://cv5rca6opqgrk"]
+
+[ext_resource type="Script" uid="uid://oklm1j07xvev" path="res://run_setup.gd" id="1_0b3tr"]
+[ext_resource type="Resource" uid="uid://d3143vvksdxob" path="res://data/weapons/machine_gun.tres" id="2_n2ksh"]
+[ext_resource type="Resource" uid="uid://iwnykiiulftw" path="res://data/weapons/shotgun.tres" id="2_o3ase"]
+[ext_resource type="Resource" uid="uid://cc6dan58pe0v1" path="res://data/characters/speed.tres" id="4_dfwig"]
+[ext_resource type="Resource" uid="uid://bqab14d64bdsb" path="res://data/characters/tank.tres" id="4_n2ksh"]
+
+[node name="RunSetup" type="Control" unique_id=1653932087]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -376.0
+offset_top = -323.0
+offset_right = -276.0
+offset_bottom = -222.99998
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(4, 4)
+script = ExtResource("1_0b3tr")
+machine_gun = ExtResource("2_n2ksh")
+shotgun = ExtResource("2_o3ase")
+tank = ExtResource("4_n2ksh")
+speed_char = ExtResource("4_dfwig")
+
+[node name="TelaArma" type="Control" parent="." unique_id=323938616]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TelaArma" unique_id=1760130344]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Escolha a Arma" type="Label" parent="TelaArma/VBoxContainer" unique_id=354535916]
+layout_mode = 2
+
+[node name="metralhadora" type="Button" parent="TelaArma/VBoxContainer" unique_id=1521613289]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+expand_icon = true
+
+[node name="doze" type="Button" parent="TelaArma/VBoxContainer" unique_id=1729197443]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+expand_icon = true
+
+[node name="TelaPersonagem" type="Control" parent="." unique_id=829674905]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TelaPersonagem" unique_id=617945224]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Escolha o Personagem" type="Label" parent="TelaPersonagem/VBoxContainer" unique_id=1472040774]
+layout_mode = 2
+
+[node name="Tank" type="Button" parent="TelaPersonagem/VBoxContainer/Escolha o Personagem" unique_id=1502876808]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Speed" type="Button" parent="TelaPersonagem/VBoxContainer/Escolha o Personagem" unique_id=1561983261]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Padrão" type="Button" parent="TelaPersonagem/VBoxContainer/Escolha o Personagem" unique_id=1478269938]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Começar" type="Button" parent="TelaPersonagem/VBoxContainer/Escolha o Personagem" unique_id=81594262]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[connection signal="pressed" from="TelaArma/VBoxContainer/metralhadora" to="." method="_on_metralhadora_pressed"]
+[connection signal="pressed" from="TelaArma/VBoxContainer/doze" to="." method="_on_doze_pressed"]
+[connection signal="pressed" from="TelaPersonagem/VBoxContainer/Escolha o Personagem/Tank" to="." method="_on_tank_pressed"]
+[connection signal="pressed" from="TelaPersonagem/VBoxContainer/Escolha o Personagem/Speed" to="." method="_on_speed_pressed"]
+[connection signal="pressed" from="TelaPersonagem/VBoxContainer/Escolha o Personagem/Padrão" to="." method="_on_padrão_pressed"]
+[connection signal="pressed" from="TelaPersonagem/VBoxContainer/Escolha o Personagem/Começar" to="." method="_on_começar_pressed"]

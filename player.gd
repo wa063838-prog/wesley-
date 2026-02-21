@@ -1,19 +1,49 @@
+@tool
 extends CharacterBody2D
+
+@export var preview_weapon: WeaponData:
+	set(value):
+		preview_weapon = value
+		update_visual()
+
+@export var preview_character: CharacterData:
+	set(value):
+		preview_character = value
+		update_visual()
+
+
 
 @export var bullet_scene : PackedScene
 @export var max_health : int = 3
 @export var speed = 500.0
 @export var invincibility_time: float = 0.6
-@export var knockback_force: float = 1000.0
-@export var knockback_decay: float = 1200.0
+@export var knockback_force: float = 600.0
+@export var knockback_decay: float = 1000.0
 @export var hit_flash : ColorRect
 @export var xp_bar : ProgressBar
 @export var level_label : Label
 @export var levelup_ui_scene : PackedScene
 @export var heart_scene : PackedScene
 @export var orb_scene : PackedScene
+@onready var sprite = $Sprite2D
 
 
+@export var mine_scene: PackedScene
+
+var mine_enabled := false
+var mine_kill_counter := 0
+
+var mine_damage := 1.5
+var mine_radius := 90.0
+var mine_delay := 0.6
+var mine_kill_requirement = 10
+
+@export var default_weapon: WeaponData
+var current_weapon: WeaponData
+var shoot_timer := 0.0
+var ammo_in_mag: int = 0
+var is_reloading: bool = false
+var reload_timer: float = 0.0
 
 var health
 var can_take_damage = true
@@ -23,26 +53,57 @@ var xp_to_next_level = 10
 var level = 1
 var xp = 0
 
+var lifesteal_chance := 0.0
+
 var stats = {
 	"damage": 1.0,
 	"speed": 500.0,
 	"magnet": 150.0
 }
 
-
-
 @onready var hearts_container = get_parent().get_node("ui/hearts")
 
 var heart_full = preload("res://heart_full.png")
 var heart_empty = preload("res://heart_empty.png")
 
+var nearby_enemies: Array = []
+
 # ------------------------------------
 # READY
 # ------------------------------------
 func _ready():
+	if Engine.is_editor_hint():
+		update_visual()
+
+
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
+	# ===== APLICA PERSONAGEM PRIMEIRO =====
+	if RunData.selected_character:
+		max_health += RunData.selected_character.bonus_health
+		stats["speed"] += RunData.selected_character.bonus_speed
+		
+		if RunData.selected_character.sprite_texture:
+			$Sprite2D.texture = RunData.selected_character.sprite_texture
+		elif RunData.selected_character.icon:
+			$Sprite2D.texture = RunData.selected_character.icon
+
+	# ===== APLICA ARMA =====
+	current_weapon = RunData.selected_weapon if RunData.selected_weapon else default_weapon
+
+	if current_weapon:
+		if current_weapon.weapon_texture:
+			$Weapon/Sprite2D.texture = current_weapon.weapon_texture
+		elif current_weapon.icon:
+			$Weapon/Sprite2D.texture = current_weapon.icon
+
+		$Weapon/Sprite2D.scale = Vector2.ONE * current_weapon.visual_scale
+	if current_weapon:
+		ammo_in_mag = current_weapon.mag_size
+	# ===== AGORA DEFINE VIDA =====
 	health = max_health
-	
-	# Cria os corações iniciais
+
+	# ===== CRIA CORAÇÕES =====
 	for i in range(max_health):
 		add_heart()
 
@@ -52,7 +113,9 @@ func _ready():
 
 	if hit_flash:
 		hit_flash.modulate.a = 0.0
-		
+
+
+
 
 func add_heart():
 	var new_heart = heart_scene.instantiate()
@@ -80,8 +143,6 @@ func update_hearts():
 func start_invincibility():
 	
 	var blink_times = 6
-	print("invincibility_time:", invincibility_time)
-	print("blink_times:", blink_times)
 	var blink_interval = invincibility_time / blink_times
 	
 	for i in range(blink_times):
@@ -97,7 +158,6 @@ func start_invincibility():
 # TOMAR DANO
 # ------------------------------------
 func take_damage(amount, source_position := Vector2.INF):
-	print("knockback_force:", knockback_force)
 
 	if not can_take_damage:
 		return
@@ -107,7 +167,7 @@ func take_damage(amount, source_position := Vector2.INF):
 	health -= amount
 	update_hearts()
 	
-	Engine.time_scale = 0.01
+	Engine.time_scale = 0.04
 	await get_tree().create_timer(0.005, true).timeout
 	Engine.time_scale = 1.0
 	
@@ -130,7 +190,6 @@ func take_damage(amount, source_position := Vector2.INF):
 	
 func flash_hit():
 	if not hit_flash:
-		print("HitFlash não setado!")
 		return
 
 	hit_flash.modulate.a = 0.6
@@ -142,18 +201,43 @@ func flash_hit():
 # ------------------------------------
 func _physics_process(delta):
 
+	if Engine.is_editor_hint():
+		return
+
+	# =========================
+	# 🔄 SISTEMA DE RELOAD
+	# =========================
+	if is_reloading:
+		reload_timer -= delta
+		if reload_timer <= 0.0:
+			is_reloading = false
+			ammo_in_mag = current_weapon.mag_size
+
+	# =========================
+	# 🔫 TIRO
+	# =========================
 	if Input.is_action_just_pressed("shoot"):
-		shoot()
-	
+		if not is_reloading:
+			try_shoot()
+
+	if ammo_in_mag <= 0 and not is_reloading:
+		start_reload()
+
+	# =========================
+	# 🔄 ROTAÇÃO DA ARMA
+	# =========================
 	$Weapon.look_at(get_global_mouse_position())
-	
+
 	var mouse_dir = get_global_mouse_position() - $Weapon.global_position
 	
 	if mouse_dir.x < 0:
-		$Weapon.scale.y = -1 
+		$Weapon.scale.y = -1
 	else:
 		$Weapon.scale.y = 1
 
+	# =========================
+	# 🏃 MOVIMENTO
+	# =========================
 	var direction = Vector2.ZERO
 	
 	if Input.is_action_pressed("move_rigth"):
@@ -164,21 +248,16 @@ func _physics_process(delta):
 		direction.y += 1
 	if Input.is_action_pressed("move_up"):
 		direction.y -= 1
-	
-	if direction.x < 0:
-		$Sprite2D.flip_h = true
-	elif direction.x >  0:
-		$Sprite2D.flip_h = false
-	var input_velocity = direction.normalized() * stats["speed"]
-	
-	# Combina movimento + knockback
-	velocity = input_velocity + knockback_velocity
-	
-	move_and_slide()
 
-	# Reduz knockback suavemente
-	print("knockback_decay:", knockback_decay)
-	print("delta:", delta)
+	if direction.x < 0:
+		$Sprite2D.flip_h = false
+	elif direction.x > 0:
+		$Sprite2D.flip_h = true
+
+	var input_velocity = direction.normalized() * stats["speed"]
+
+	velocity = input_velocity + knockback_velocity
+	move_and_slide()
 
 	if knockback_decay != null:
 		knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, knockback_decay * delta)
@@ -188,30 +267,52 @@ func _physics_process(delta):
 # TIRO
 # ------------------------------------
 func shoot():
-	var bullet = bullet_scene.instantiate()
-	get_tree().current_scene.add_child(bullet)
-	
-	bullet.global_position = $Weapon.global_position
-	bullet.rotation = $Weapon.global_rotation
-	
-	var dir = (get_global_mouse_position() - bullet.global_position).normalized()
-	bullet.direction = dir
-	
-	bullet.damage = stats["damage"]
+	if not current_weapon or not current_weapon.bullet_scene:
+		return
 
+	for i in current_weapon.projectile_count:
+		var bullet = current_weapon.bullet_scene.instantiate()
+		get_tree().current_scene.add_child(bullet)
 
+		bullet.global_position = $Weapon.global_position
+
+		var dir = (get_global_mouse_position() - bullet.global_position).normalized()
+
+		if current_weapon.spread_degrees > 0.0:
+			var ang = deg_to_rad(randf_range(-current_weapon.spread_degrees, current_weapon.spread_degrees))
+			dir = dir.rotated(ang)
+
+		bullet.direction = dir
+		bullet.damage = current_weapon.damage
+		bullet.max_distance = current_weapon.max_distance
+		bullet.pierce = current_weapon.pierce
+
+func try_shoot():
+	if not current_weapon:
+		return
+		
+	if ammo_in_mag <= 0:
+		return
+		
+	shoot()
+	ammo_in_mag -= 1
+	
+func start_reload():
+	if not current_weapon:
+		return
+		
+	is_reloading = true
+	reload_timer = current_weapon.reload_time
 # ------------------------------------
 # SISTEMA DE XP
 # ------------------------------------
 
 func add_xp(amount):
 	xp += amount
-	print("XP:", xp)
 	update_xp_bar()
 	
 	if xp >= xp_to_next_level:
 		level_up()
-
 
 func level_up():
 	level += 1
@@ -222,14 +323,9 @@ func level_up():
 	update_level_label()
 	
 	show_level_up_screen()
-
-	print("LEVEL UP!", level)
 	
 	update_xp_bar()
 	
-	print("LEVEL UP! Agora nível ", level)
-
-
 func update_xp_bar():
 	if xp_bar:
 		xp_bar.max_value = xp_to_next_level
@@ -285,8 +381,32 @@ var all_upgrades = [
 	"value": 1,
 	"rarity": "rare",
 	"max_level": 3
+},
+{
+	"id": "pierce",
+	"name": "Perfuração",
+	"description": "Projéteis atravessam +1 inimigo",
+	"type": "pierce",
+	"value": 1,
+	"rarity": "rare",
+	"max_level": 5
+},{
+	"id": "lifesteal",
+	"name": "Vampirismo",
+	"description": "10% de chance de recuperar 1 de vida ao matar inimigos",
+	"type": "lifesteal",
+	"value": 0.03,
+	"rarity": "rare",
+	"max_level": 5
+},{
+	"id": "mine",
+	"name": "Campo Minado",
+	"description": "A cada 10 inimigos mortos, cria uma mina explosiva",
+	"type": "mine",
+	"value": 10,
+	"rarity": "rare",
+	"max_level": 5
 }
-
 
 ]
 var owned_upgrades = {}
@@ -302,37 +422,41 @@ func apply_upgrade(upgrade_data):
 	match upgrade_data["type"]:
 		"speed":
 			stats["speed"] += stats["speed"] * upgrade_data["value"]
+
 		"damage":
 			stats["damage"] += upgrade_data["value"]
+
 		"companion_orb":
 			spawn_orb()
 
 		"magnet":
 			stats["magnet"] += upgrade_data["value"]
+
 		"health":
 			max_health += upgrade_data["value"]
 			health += upgrade_data["value"]
 
 			if heart_scene:
-				print("Antes:", hearts_container.get_child_count())
 				var new_heart = heart_scene.instantiate()
 				hearts_container.add_child(new_heart)
-				print("Depois:", hearts_container.get_child_count())
-
+		"lifesteal":
+			lifesteal_chance += upgrade_data["value"]
 			update_hearts()
 
+		"pierce":
+			current_weapon.pierce += upgrade_data["value"]
+		
+		"mine":
+			mine_enabled = true
+			mine_kill_requirement = upgrade_data["value"]
 
-
-	print("Upgrade aplicado:", id, "Nível:", owned_upgrades[id])
 
 func show_level_up_screen():
-	print("Instanciando UI...")
 	
 	var ui = levelup_ui_scene.instantiate()
 	
 	get_tree().get_root().add_child(ui)
 	
-	print("UI adicionada na cena")
 	
 	var options = get_random_upgrades(3)
 	ui.setup(self, options)
@@ -347,8 +471,61 @@ func get_random_upgrades(amount := 3):
 	
 func spawn_orb():
 	var orb = preload("res://orb_companion.tscn").instantiate()
-	add_child(orb)
-
-
-
+	get_tree().current_scene.add_child(orb)
+	orb.global_position = global_position
 	
+func update_visual():
+	if not Engine.is_editor_hint():
+		return
+
+	# PERSONAGEM
+	if preview_character:
+		if preview_character.sprite_texture:
+			$Sprite2D.texture = preview_character.sprite_texture
+		elif preview_character.icon:
+			$Sprite2D.texture = preview_character.icon
+
+	# ARMA
+	if preview_weapon:
+		if preview_weapon.weapon_texture:
+			$Weapon/Sprite2D.texture = preview_weapon.weapon_texture
+		elif preview_weapon.icon:
+			$Weapon/Sprite2D.texture = preview_weapon.icon
+
+		$Weapon/Sprite2D.scale = Vector2.ONE * preview_weapon.visual_scale
+
+func heal(amount):
+	health = min(health + amount, max_health)
+	update_hearts()
+
+		
+func _process(delta):
+
+	if Engine.is_editor_hint():
+		update_visual()
+		return
+
+func _enter_tree():
+	if Engine.is_editor_hint():
+		update_visual()
+		
+func register_kill():
+	if not mine_enabled:
+		return
+
+	mine_kill_counter += 1
+
+	if mine_kill_counter >= mine_kill_requirement:
+		mine_kill_counter = 0
+		spawn_mine()
+func spawn_mine():
+	if not mine_scene:
+		return
+
+	var mine = mine_scene.instantiate()
+	get_tree().current_scene.add_child(mine)
+	mine.global_position = global_position
+
+	# passa stats pra mina
+	if mine.has_method("setup"):
+		mine.setup(mine_damage, mine_radius, mine_delay)

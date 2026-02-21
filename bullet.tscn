@@ -4,19 +4,21 @@
 [ext_resource type="Texture2D" uid="uid://dssitchv3ooc6" path="res://1744293680_new_photo_2025-04-01_01-54-25.jpg" id="2_v8qja"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v8qja"]
-size = Vector2(416.575, 550)
+size = Vector2(866.6669, 1066.6667)
 
 [node name="Bullet" type="Area2D" unique_id=1094639483]
+scale = Vector2(0.1, 0.1)
 collision_layer = 4
-collision_mask = 2
+collision_mask = 10
 script = ExtResource("1_v7oki")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1588383947]
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.3, 0.3)
 texture = ExtResource("2_v8qja")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1635141795]
-position = Vector2(-0.7125015, 0)
+position = Vector2(-9.536741e-06, 3.5762772e-05)
+scale = Vector2(0.29999986, 0.29999986)
 shape = SubResource("RectangleShape2D_v8qja")
 
-[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
