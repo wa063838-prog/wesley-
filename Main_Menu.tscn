@@ -4,22 +4,25 @@
 
 [node name="MainMenu" type="Control" unique_id=316419418]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 53.0
-offset_bottom = 49.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_m625n")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1009916138]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = 403.0
-offset_top = 246.0
-offset_right = 732.0
-offset_bottom = 464.5
+offset_left = -66.0
+offset_top = 276.0
+offset_right = 66.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 10
 
 [node name="MEU JOGO" type="Label" parent="VBoxContainer" unique_id=2100746089]
 layout_mode = 2
@@ -28,9 +31,14 @@ layout_mode = 2
 layout_mode = 2
 text = "JOGAR"
 
+[node name="Colecionaveis" type="Button" parent="VBoxContainer" unique_id=2040900708]
+layout_mode = 2
+text = "COLECIONÁVEIS"
+
 [node name="Sair" type="Button" parent="VBoxContainer" unique_id=190595903]
 layout_mode = 2
 text = "SAIR"
 
 [connection signal="pressed" from="VBoxContainer/Jogar" to="." method="_on_jogar_pressed"]
+[connection signal="pressed" from="VBoxContainer/Colecionaveis" to="." method="_on_colecionaveis_pressed"]
 [connection signal="pressed" from="VBoxContainer/Sair" to="." method="_on_sair_pressed"]

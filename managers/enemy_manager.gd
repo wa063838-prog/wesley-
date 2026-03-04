@@ -3,6 +3,7 @@ extends Node
 var enemies: Array = []
 var frame_group := 0
 var total_groups := 3
+var total_kills := 0
 const CELL_SIZE = 100
 var grid = {}
 var steering_forces = {}  # dict[enemy] = {separation, alignment, cohesion}
@@ -12,6 +13,9 @@ var steering_forces = {}  # dict[enemy] = {separation, alignment, cohesion}
 const ADJUSTED_CELL_SIZE = 100
 
 func _process(_delta):
+	
+	enemies = enemies.filter(func(e): return is_instance_valid(e))
+	
 	frame_group = (frame_group + 1) % total_groups
 	update_all_grids()
 	compute_steering_forces()

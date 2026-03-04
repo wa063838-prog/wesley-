@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://d24ig4rxmp6a5" path="res://escolher_arma.gd" id="1_3l6jl"]
 [ext_resource type="Resource" uid="uid://d3143vvksdxob" path="res://data/weapons/machine_gun.tres" id="2_n6hst"]
 [ext_resource type="Resource" uid="uid://iwnykiiulftw" path="res://data/weapons/shotgun.tres" id="3_7wt1w"]
-[ext_resource type="Texture2D" uid="uid://dhnds2f00ddbl" path="res://assets/icons/weapons/shotgun.jpg" id="4_7wt1w"]
-[ext_resource type="Texture2D" uid="uid://74fbyjcelmil" path="res://assets/icons/weapons/machine_gun.jpg" id="4_k8x4v"]
+[ext_resource type="Texture2D" uid="uid://duvghh8b174g2" path="res://assets/icons/weapons/machine_gun.png" id="4_k8x4v"]
+[ext_resource type="Texture2D" uid="uid://blvgxex4pye4a" path="res://assets/icons/weapons/shotgun.png" id="5_k8x4v"]
 
 [node name="EscolherArma" type="Control" unique_id=1848693221]
 layout_mode = 3
@@ -19,34 +19,35 @@ shotgun = ExtResource("3_7wt1w")
 
 [node name="Escolha a Arma" type="Label" parent="." unique_id=1960060730]
 layout_mode = 0
-offset_left = 66.5
-offset_top = 0.25
-offset_right = 177.5
-offset_bottom = 32.0
+offset_left = 85.0
+offset_top = 17.0
+offset_right = 281.0
+offset_bottom = 70.0
+theme_override_font_sizes/font_size = 34
 text = "escolher arma"
 
 [node name="Metralhadora" type="TextureButton" parent="." unique_id=1331191275]
+texture_filter = 1
 layout_mode = 0
 offset_left = 62.0
 offset_top = 359.0
-offset_right = 2531.9998
-offset_bottom = 978.99994
-scale = Vector2(0.2, 0.2)
+offset_right = 115.2
+offset_bottom = 388.6
+scale = Vector2(5, 5)
 texture_normal = ExtResource("4_k8x4v")
 texture_pressed = ExtResource("4_k8x4v")
-texture_hover = ExtResource("4_k8x4v")
-texture_disabled = ExtResource("4_k8x4v")
 
 [node name="Doze" type="TextureButton" parent="." unique_id=2050561234]
+texture_filter = 1
 layout_mode = 0
 offset_left = 70.0
 offset_top = 117.99999
-offset_right = 6432.5
-offset_bottom = 1218.0
-scale = Vector2(0.2, 0.2)
-texture_normal = ExtResource("4_7wt1w")
-texture_pressed = ExtResource("4_7wt1w")
-texture_hover = ExtResource("4_7wt1w")
+offset_right = 122.2
+offset_bottom = 141.79999
+scale = Vector2(5, 5)
+texture_normal = ExtResource("5_k8x4v")
+texture_pressed = ExtResource("5_k8x4v")
+texture_hover = ExtResource("5_k8x4v")
 
 [node name="voltar" type="Button" parent="." unique_id=2069209883]
 layout_mode = 0
@@ -59,4 +60,4 @@ text = "voltar"
 
 [connection signal="pressed" from="Metralhadora" to="." method="_on_metralhadora_pressed"]
 [connection signal="pressed" from="Doze" to="." method="_on_doze_pressed"]
-[connection signal="pressed" from="voltar" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="voltar" to="." method="_on_voltar_pressed"]

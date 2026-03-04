@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://crq10in44kye2"]
+
+[ext_resource type="Script" uid="uid://d02mksikfk72i" path="res://airstrike_missile.gd" id="1_6smsm"]
+[ext_resource type="Texture2D" uid="uid://dglueweuf4hep" path="res://micro projectile (25).png" id="2_6pno5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0xgub"]
+size = Vector2(639, 736)
+
+[node name="missile" type="Node2D" unique_id=2043822101]
+script = ExtResource("1_6smsm")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=938663316]
+texture_filter = 1
+position = Vector2(-0.9917222, 0.9917298)
+rotation = 1.5707964
+scale = Vector2(6.144536, 24.640354)
+texture = ExtResource("2_6pno5")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1958242740]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1325007298]
+position = Vector2(-1.5, 1)
+shape = SubResource("RectangleShape2D_0xgub")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="." unique_id=2055715564]
+emitting = false
+amount = 30
+sub_emitter = NodePath(".")
+lifetime = 0.4

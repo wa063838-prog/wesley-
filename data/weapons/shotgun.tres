@@ -2,7 +2,8 @@
 
 [ext_resource type="Script" uid="uid://d1kn1gr61nuxs" path="res://data/weapon_data.gd" id="1_euj80"]
 [ext_resource type="PackedScene" uid="uid://bk203layg0tjf" path="res://bullet.tscn" id="1_k642q"]
-[ext_resource type="Texture2D" uid="uid://dhnds2f00ddbl" path="res://assets/icons/weapons/shotgun.jpg" id="2_yhlrr"]
+[ext_resource type="Texture2D" uid="uid://blvgxex4pye4a" path="res://assets/icons/weapons/shotgun.png" id="2_yhlrr"]
+[ext_resource type="AudioStream" uid="uid://ds85btk3e7jyy" path="res://shoot_sound.mp3" id="4_whh7f"]
 
 [resource]
 script = ExtResource("1_euj80")
@@ -14,6 +15,8 @@ damage = 2.0
 projectile_count = 6
 spread_degrees = 25.0
 weapon_texture = ExtResource("2_yhlrr")
+visual_scale = 20.0
 mag_size = 2
 reload_time = 1.1
+shoot_sound = ExtResource("4_whh7f")
 metadata/_custom_type_script = "uid://d1kn1gr61nuxs"

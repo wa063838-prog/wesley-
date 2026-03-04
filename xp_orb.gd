@@ -1,6 +1,6 @@
 extends Area2D
 
-@export var xp_value = 1
+@export var xp_value = 2.5
 @export var speed = 250.0
 
 var player = null

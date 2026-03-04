@@ -15,4 +15,6 @@ search_interval = null
 bullet_scene = ExtResource("2_tg63q")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1672807449]
+position = Vector2(-12.499992, 0)
+scale = Vector2(2.1050348, 2.1728516)
 texture = ExtResource("2_amx7x")

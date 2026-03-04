@@ -5,7 +5,7 @@
 [ext_resource type="Resource" uid="uid://cc6dan58pe0v1" path="res://data/characters/speed.tres" id="3_4601s"]
 [ext_resource type="Texture2D" uid="uid://pitgg3jiwt02" path="res://assets/icons/characters/tank.jpg" id="4_17ht3"]
 [ext_resource type="Texture2D" uid="uid://cu1ntcc55q2r5" path="res://assets/icons/characters/speed.jpg" id="5_1f87o"]
-[ext_resource type="Texture2D" uid="uid://b6mnbnoqfgdtu" path="res://assets/icons/characters/padrao.jpg" id="6_20o0x"]
+[ext_resource type="Texture2D" uid="uid://bf2cem1tnaqpa" path="res://assets/icons/characters/padrao.jpg" id="6_20o0x"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_npc8n"]
 load_path = "res://.godot/imported/padrao.jpg-67038c5076d3ea6658a47eaaa78cac34.ctex"
@@ -28,6 +28,8 @@ offset_bottom = 100.0
 
 [node name="Escolha o Persongem" type="Label" parent="VBoxContainer" unique_id=1571714951]
 layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "escolher personagem"
 
 [node name="Tank" type="TextureButton" parent="VBoxContainer/Escolha o Persongem" unique_id=1946470263]
 layout_mode = 0

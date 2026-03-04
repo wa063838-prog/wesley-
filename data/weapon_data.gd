@@ -14,3 +14,4 @@ class_name WeaponData
 @export var pierce: int = 0
 @export var mag_size := 8
 @export var reload_time := 1.5
+@export var shoot_sound: AudioStream

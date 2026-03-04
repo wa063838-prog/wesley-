@@ -1,12 +1,14 @@
 extends Node2D
 
-@export var enemy_scene: PackedScene
+@export var standard_enemy_scene: PackedScene
+@export var fast_enemy_scene: PackedScene
+@export var tank_enemy_scene: PackedScene
+@export var boss_scene: PackedScene
 @export var base_spawn_time: float = 1.5
-
+@export var victory_scene : PackedScene
 # 🔥 Limite de inimigos ativos
 @export var base_enemy_cap: int = 100
 @export var cap_growth_per_minute: int = 50
-
 var spawn_time: float = 1.5
 var timer: float = 0.0
 var game_time: float = 0.0
@@ -17,6 +19,9 @@ var max_enemy_cap := 700
 
 var fps_timer := 0.0
 
+var victory_shown := false
+
+var boss_spawned := false
 
 func _process(delta):
 
@@ -53,7 +58,10 @@ func _process(delta):
 		try_spawn()
 
 
-
+	if game_time >= 5 and not boss_spawned:
+		print('SPAWNANDO BOSS')
+		spawn_boss()
+		boss_spawned = true
 # ------------------------------
 # CAP DINÂMICO
 # ------------------------------
@@ -68,6 +76,10 @@ func get_enemy_cap() -> int:
 # ------------------------------
 
 func try_spawn():
+	if boss_spawned:
+		return
+
+	EnemyManager.enemies = EnemyManager.enemies.filter(func(e): return is_instance_valid(e))
 
 	if EnemyManager.enemies.size() >= dynamic_enemy_cap:
 		return
@@ -100,9 +112,13 @@ func try_spawn():
 			if EnemyManager.enemies.size() >= dynamic_enemy_cap:
 				return
 
-			var enemy = enemy_scene.instantiate()
-			get_parent().add_child(enemy)
+			var enemy = standard_enemy_scene.instantiate()
+			var t = choose_enemy_type()
 
+			# seta o tipo no inimigo (0,1,2)
+			enemy.enemy_type = t
+			
+			get_tree().current_scene.add_child(enemy)
 
 
 			# Cluster compacto
@@ -112,3 +128,105 @@ func try_spawn():
 			)
 
 			enemy.global_position = player.global_position + direction * spawn_distance + spread
+
+func get_spawn_weights():
+
+	var weights = {
+		"standard": 0.0,
+		"fast": 0.0,
+		"tank": 0.0
+	}
+
+	var t = game_time
+
+	# 0 - 2 minutos
+	if t < 120:
+		var progress = t / 120.0
+		weights["standard"] = lerp(1.0, 0.2, progress)
+		weights["fast"] = lerp(0.0, 0.8, progress)
+
+	# 2 - 4 minutos
+	elif t < 240:
+		var progress = (t - 120) / 120.0
+		weights["fast"] = lerp(1.0, 0.3, progress)
+		weights["tank"] = lerp(0.0, 0.7, progress)
+
+	# 4+ minutos
+	else:
+		weights["standard"] = 0.3
+		weights["fast"] = 0.3
+		weights["tank"] = 0.4
+
+	return weights
+	
+func choose_enemy_type() -> int:
+	var t = game_time
+	var fade := 20.0 # segundos de transição suave (ajuste)
+
+	# 0-2 min: standard -> no final começa a entrar fast
+	if t < 120.0:
+		var out = clamp((t - (120.0 - fade)) / fade, 0.0, 1.0)
+		return 1 if randf() < out else 0
+
+	# 2-4 min: fast -> no final começa a entrar tank
+	if t < 240.0:
+		var out = clamp((t - (240.0 - fade)) / fade, 0.0, 1.0)
+		return 2 if randf() < out else 1
+
+	# 4-6 min: tank -> no final começa a misturar
+	if t < 360.0:
+		var out = clamp((t - (360.0 - fade)) / fade, 0.0, 1.0)
+		if randf() < out:
+			return randi() % 3 # mistura começando
+		return 2
+
+	# 6-8 min: mistura total
+	if t < 480.0:
+		return randi() % 3
+
+	# depois disso (boss), tanto faz
+	return 0
+		
+func spawn_boss():
+
+	var player = get_tree().get_first_node_in_group("player")
+	if player == null:
+		return
+
+	var boss = boss_scene.instantiate()
+	get_tree().current_scene.add_child(boss)
+
+	boss.enemy_type = boss.EnemyType.BOSS
+
+	var offset = Vector2(0, -200)
+	boss.global_position = player.global_position + offset
+
+func show_victory():
+	
+	if victory_shown:
+		return
+	
+	victory_shown = true
+	# ✅ trava o spawner
+	set_process(false)
+
+	# ✅ trava o player
+	var player = get_tree().get_first_node_in_group("player")
+	if player:
+		player.set_process(false)
+		player.set_physics_process(false)
+		player.set_process_input(false)
+
+	# ✅ trava todos os inimigos (inclusive boss, se ainda existir)
+	for e in EnemyManager.enemies:
+		if is_instance_valid(e):
+			e.set_process(false)
+			e.set_physics_process(false)
+
+	# ✅ mostra a UI
+	var layer = victory_scene.instantiate()
+	add_child(layer)
+	layer.get_node("VictoryUI").setup(game_time, EnemyManager.total_kills)
+
+	# ✅ garante mouse livre pra clicar (caso seu jogo mexa nisso)
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE

@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://b0x1br8r0se3t"]
+
+[ext_resource type="Script" uid="uid://b15s2iq2ikuug" path="res://enemy.gd" id="1_6xxrv"]
+[ext_resource type="Texture2D" uid="uid://cjd118rjmpa07" path="res://1.png" id="2_skx2t"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_6xxrv"]
+radius = 78.43965
+height = 427.41504
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_skx2t"]
+radius = 86.0
+height = 436.9967
+
+[node name="boss" type="CharacterBody2D" unique_id=971499019]
+script = ExtResource("1_6xxrv")
+enemy_type = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=671015854]
+position = Vector2(3.000001, 2.3841858e-07)
+scale = Vector2(0.56593406, 0.6830066)
+texture = ExtResource("2_skx2t")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1224727764]
+position = Vector2(-73, 14)
+rotation = 0.71383965
+shape = SubResource("CapsuleShape2D_6xxrv")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1453010578]
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1726200971]
+position = Vector2(-85.999985, 18.000008)
+rotation = 0.6667158
+shape = SubResource("CapsuleShape2D_skx2t")
+
+[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]

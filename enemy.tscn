@@ -23,6 +23,8 @@ shape = SubResource("RectangleShape2D_4gyqm")
 debug_color = Color(0.8365947, 0.35144952, 0.4364019, 0.41960785)
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=146609192]
+position = Vector2(3.333374, 46.6667)
+scale = Vector2(1.0117648, 0.944713)
 texture = ExtResource("2_4gyqm")
 
 [node name="DamageArea" type="Area2D" parent="." unique_id=1717078441]

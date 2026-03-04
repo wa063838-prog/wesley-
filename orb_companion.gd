@@ -37,6 +37,7 @@ func _process(delta):
 	shoot_timer += delta
 	if shoot_timer >= shoot_cooldown:
 		shoot_timer = 0.0
+		
 		shoot_nearest_enemy()
 
 # ------------------------------

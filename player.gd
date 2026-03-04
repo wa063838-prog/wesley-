@@ -13,7 +13,6 @@ extends CharacterBody2D
 
 
 
-@export var bullet_scene : PackedScene
 @export var max_health : int = 3
 @export var speed = 500.0
 @export var invincibility_time: float = 0.6
@@ -26,9 +25,12 @@ extends CharacterBody2D
 @export var heart_scene : PackedScene
 @export var orb_scene : PackedScene
 @onready var sprite = $Sprite2D
-
-
+@onready var ammo_label = $AmmoLabel
+@onready var Weapon = $Weapon
+@onready var Weapon_sprite: Sprite2D = $Weapon/Sprite2D 
+@onready var muzzle: Marker2D = $Weapon/Muzzle
 @export var mine_scene: PackedScene
+@onready var shoot_sound: AudioStreamPlayer2D = $ShootSound
 
 var mine_enabled := false
 var mine_kill_counter := 0
@@ -66,8 +68,16 @@ var stats = {
 var heart_full = preload("res://heart_full.png")
 var heart_empty = preload("res://heart_empty.png")
 
-var nearby_enemies: Array = []
+var nearby_enemy: Array = []
 
+var survival_time := 0.0
+var total_kills := 0
+
+var airstrike_enabled := false
+var airstrike_kill_counter := 0
+var  airstrike_kill_requirement := 20
+var airstrike_damage := 50
+var airstrike_radius := 120.0
 # ------------------------------------
 # READY
 # ------------------------------------
@@ -100,6 +110,7 @@ func _ready():
 		$Weapon/Sprite2D.scale = Vector2.ONE * current_weapon.visual_scale
 	if current_weapon:
 		ammo_in_mag = current_weapon.mag_size
+		update_ammo_label()
 	# ===== AGORA DEFINE VIDA =====
 	health = max_health
 
@@ -110,7 +121,6 @@ func _ready():
 	update_hearts()
 	update_level_label()
 	update_xp_bar()
-
 	if hit_flash:
 		hit_flash.modulate.a = 0.0
 
@@ -182,7 +192,7 @@ func take_damage(amount, source_position := Vector2.INF):
 
 	
 	if health <= 0:
-		queue_free()
+		die()
 		return
 		
 	start_invincibility()
@@ -204,6 +214,9 @@ func _physics_process(delta):
 	if Engine.is_editor_hint():
 		return
 
+	if not get_tree().paused:
+		survival_time += delta
+
 	# =========================
 	# 🔄 SISTEMA DE RELOAD
 	# =========================
@@ -212,6 +225,7 @@ func _physics_process(delta):
 		if reload_timer <= 0.0:
 			is_reloading = false
 			ammo_in_mag = current_weapon.mag_size
+			update_ammo_label()
 
 	# =========================
 	# 🔫 TIRO
@@ -226,14 +240,11 @@ func _physics_process(delta):
 	# =========================
 	# 🔄 ROTAÇÃO DA ARMA
 	# =========================
-	$Weapon.look_at(get_global_mouse_position())
+	var dir: Vector2 = get_global_mouse_position() - Weapon.global_position
+	Weapon.rotation = dir.angle() - deg_to_rad(90)
+	Weapon_sprite.flip_v = dir.x > 0
 
-	var mouse_dir = get_global_mouse_position() - $Weapon.global_position
-	
-	if mouse_dir.x < 0:
-		$Weapon.scale.y = -1
-	else:
-		$Weapon.scale.y = 1
+	# 🔄 Espelha apenas o sprite da arma
 
 	# =========================
 	# 🏃 MOVIMENTO
@@ -266,17 +277,18 @@ func _physics_process(delta):
 # ------------------------------------
 # TIRO
 # ------------------------------------
+
 func shoot():
 	if not current_weapon or not current_weapon.bullet_scene:
 		return
 
-	for i in current_weapon.projectile_count:
+	for i in range(current_weapon.projectile_count):
 		var bullet = current_weapon.bullet_scene.instantiate()
 		get_tree().current_scene.add_child(bullet)
 
-		bullet.global_position = $Weapon.global_position
+		bullet.global_position = muzzle.global_position
 
-		var dir = (get_global_mouse_position() - bullet.global_position).normalized()
+		var dir = (get_global_mouse_position() - muzzle.global_position).normalized()
 
 		if current_weapon.spread_degrees > 0.0:
 			var ang = deg_to_rad(randf_range(-current_weapon.spread_degrees, current_weapon.spread_degrees))
@@ -286,6 +298,13 @@ func shoot():
 		bullet.damage = current_weapon.damage
 		bullet.max_distance = current_weapon.max_distance
 		bullet.pierce = current_weapon.pierce
+		bullet.rotation = dir.angle()
+
+	# 🔊 toca som UMA vez
+	if current_weapon.shoot_sound:
+		shoot_sound.stream = current_weapon.shoot_sound
+		shoot_sound.pitch_scale = randf_range(0.95, 1.05)
+		shoot_sound.play()
 
 func try_shoot():
 	if not current_weapon:
@@ -296,6 +315,7 @@ func try_shoot():
 		
 	shoot()
 	ammo_in_mag -= 1
+	update_ammo_label()
 	
 func start_reload():
 	if not current_weapon:
@@ -393,9 +413,9 @@ var all_upgrades = [
 },{
 	"id": "lifesteal",
 	"name": "Vampirismo",
-	"description": "10% de chance de recuperar 1 de vida ao matar inimigos",
+	"description": "1% de chance de recuperar 1 de vida ao matar inimigos",
 	"type": "lifesteal",
-	"value": 0.03,
+	"value": 0.01,
 	"rarity": "rare",
 	"max_level": 5
 },{
@@ -406,7 +426,13 @@ var all_upgrades = [
 	"value": 10,
 	"rarity": "rare",
 	"max_level": 5
-}
+},{ "id": "airstrike",
+	"name": "Ataque Aéreo",
+	"description": "A cada 20 inimigos mortos, um míssil cai do céu",
+	"type": "airstrike",
+	"value": 1 ,
+	"rarity": "rare",
+	"max_level": 4}
 
 ]
 var owned_upgrades = {}
@@ -431,14 +457,22 @@ func apply_upgrade(upgrade_data):
 
 		"magnet":
 			stats["magnet"] += upgrade_data["value"]
-
+		"airstrike":
+			airstrike_enabled = true
+			airstrike_kill_requirement = max(5, airstrike_kill_requirement - 3)
+			airstrike_damage += 15
 		"health":
 			max_health += upgrade_data["value"]
 			health += upgrade_data["value"]
 
-			if heart_scene:
-				var new_heart = heart_scene.instantiate()
-				hearts_container.add_child(new_heart)
+			# 🔥 Reconstrói completamente os corações
+			for child in hearts_container.get_children():
+				child.free()
+
+			for i in range(max_health):
+				add_heart()
+
+			update_hearts()
 		"lifesteal":
 			lifesteal_chance += upgrade_data["value"]
 			update_hearts()
@@ -510,14 +544,21 @@ func _enter_tree():
 		update_visual()
 		
 func register_kill():
-	if not mine_enabled:
-		return
+	total_kills += 1
+	
+	if airstrike_enabled:
+		airstrike_kill_counter += 1
+		
+		if airstrike_kill_counter >= airstrike_kill_requirement:
+			airstrike_kill_counter = 0
+			spawn_airstrike()
+	
+	if mine_enabled:
+		mine_kill_counter += 1
 
-	mine_kill_counter += 1
-
-	if mine_kill_counter >= mine_kill_requirement:
-		mine_kill_counter = 0
-		spawn_mine()
+		if mine_kill_counter >= mine_kill_requirement:
+			mine_kill_counter = 0
+			spawn_mine()
 func spawn_mine():
 	if not mine_scene:
 		return
@@ -529,3 +570,51 @@ func spawn_mine():
 	# passa stats pra mina
 	if mine.has_method("setup"):
 		mine.setup(mine_damage, mine_radius, mine_delay)
+		
+func die():
+
+	var game_over = preload("res://GameOver.tscn").instantiate()
+
+	var canvas = get_tree().current_scene.get_node("CanvasLayer")
+	canvas.add_child(game_over)
+
+	game_over.setup(survival_time, total_kills)
+
+	get_tree().paused = true
+	set_physics_process(false)
+	set_process(false)
+	visible = false
+	
+func update_ammo_label():
+
+	if not ammo_label:
+		return
+
+	if is_reloading:
+		ammo_label.text = "RECARREGANDO"
+	else:
+		ammo_label.text = str(ammo_in_mag) + " / " + str(current_weapon.mag_size)
+		
+func spawn_airstrike():
+
+	var valid_enemies := []
+
+	for enemy in EnemyManager.enemies:
+		if is_instance_valid(enemy):
+			valid_enemies.append(enemy)
+
+	if valid_enemies.is_empty():
+		return
+
+	var target = valid_enemies[randi() % valid_enemies.size()]
+
+	var missile_scene = preload("res://airstrike_missile.tscn")
+	var missile = missile_scene.instantiate()
+
+	get_tree().current_scene.add_child(missile)
+
+	# Spawn acima do inimigo
+	missile.global_position = target.global_position + Vector2(0, -800)
+
+	# IMPORTANTE: passar o inimigo, não a posição
+	missile.setup(target, airstrike_damage, airstrike_radius)

@@ -3,6 +3,8 @@ extends Node2D
 @export var speed = 190
 @export var max_health = 2
 @export var damage = 1
+enum EnemyType { STANDARD, FAST, TANK, BOSS }
+@export var enemy_type : EnemyType = EnemyType.STANDARD
 @onready var xp_orb_scene = preload("res://xp_orb.tscn")
 
 var knockback_velocity: Vector2 = Vector2.ZERO
@@ -23,6 +25,7 @@ var angle_offset: float
 @export var orbit_speed_var := 0.18
 @export var jitter_strength := 12.0
 
+
 var orbit_speed := 0.4
 var jitter_accum := Vector2.ZERO
 var velocity_current := Vector2.ZERO
@@ -32,12 +35,14 @@ var update_group := 0
 var player = null
 var health
 
+var is_dead := false
+
 func _ready():
 	update_group = randi() % EnemyManager.total_groups
 	player = get_tree().get_first_node_in_group("player")
-	health = max_health
 	EnemyManager.register_enemy(self)
 	speed *= randf_range(0.92, 1.08)
+	EnemyManager.total_kills = 0
 
 	orbit_angle = randf() * TAU + randf_range(-0.5, 0.5)
 	var base_radius = 80.0
@@ -46,7 +51,37 @@ func _ready():
 	orbit_speed = orbit_speed_base + randf_range(-orbit_speed_var, orbit_speed_var)
 	# small per-enemy jitter accumulator to break perfect symmetry
 	jitter_accum = Vector2.ZERO
+	
+	match enemy_type:
 
+		EnemyType.STANDARD:
+			speed = 190
+			max_health = 2
+			damage = 1
+			modulate = Color.WHITE
+
+		EnemyType.FAST:
+			speed = 280
+			max_health = 1
+			damage = 1
+			modulate = Color(1, 0.6, 0.6)
+
+		EnemyType.TANK:
+			speed = 120
+			max_health = 6
+			damage = 2
+			modulate = Color(0.6, 0.6, 1)
+
+		EnemyType.BOSS:
+			speed = 140
+			max_health = 200
+			damage = 4
+			scale = Vector2(2,2)
+			modulate = Color(1, 0.3, 0.3)
+	
+	health = max_health
+	EnemyManager.register_enemy(self)
+	speed *= randf_range(0.92, 1.08)
 func _process(delta):
 	if update_group != EnemyManager.frame_group:
 		# Apply separation steering on off-frame groups
@@ -122,17 +157,28 @@ func resolve_overlap():
 			neighbor.global_position -= push
 
 func take_damage(amount):
+
+	if is_dead:
+		return
+
 	health -= amount
 	
 	if health <= 0:
-		# Lifesteal
+		is_dead = true
+
+		if enemy_type == EnemyType.BOSS:
+			die_as_boss()
+			return
+
+	# inimigo normal
 		if player and randf() < player.lifesteal_chance:
 			player.heal(1)
 
-		# Conta kill pra mina
 		if player:
 			player.register_kill()
-
+	
+		EnemyManager.total_kills += 1
+		
 		drop_xp()
 		queue_free()
 
@@ -148,4 +194,21 @@ func drop_xp():
 
 func _exit_tree():
 	EnemyManager.unregister_enemy(self)
-	
+
+func die_as_boss():
+
+	if player:
+		player.register_kill()
+
+	get_tree().paused = true
+	get_tree().get_first_node_in_group("spawner").show_victory()
+
+	queue_free()
+
+
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	pass # Replace with function body.
+
+
+func _on_area_2d_area_entered(area: Area2D) -> void:
+	pass # Replace with function body.
