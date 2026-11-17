@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://ruxtv7t7pnkk"]
+
+[ext_resource type="Script" uid="uid://dglwlijfguxv8" path="res://scrap.gd" id="1_ktp86"]
+[ext_resource type="Texture2D" uid="uid://olm8x55qcha8" path="res://download.jpg" id="2_a3045"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dault"]
+radius = 12.369317
+
+[node name="Scrap" type="Area2D" unique_id=90904666]
+script = ExtResource("1_ktp86")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1797440044]
+position = Vector2(-4.7683716e-07, 0)
+scale = Vector2(0.12444443, 0.115555555)
+texture = ExtResource("2_a3045")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=817588002]
+shape = SubResource("CircleShape2D_dault")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1764647538]
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

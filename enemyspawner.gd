@@ -13,9 +13,18 @@ var spawn_time: float = 1.5
 var timer: float = 0.0
 var game_time: float = 0.0
 
-var dynamic_enemy_cap := 580
-var min_enemy_cap := 250
-var max_enemy_cap := 700
+@onready var north = get_node("../SpawnPoints/North")
+@onready var north2 = get_node("../SpawnPoints/North2")
+@onready var south = get_node("../SpawnPoints/South")
+@onready var east = get_node("../SpawnPoints/East")
+@onready var west = get_node("../SpawnPoints/West")
+@export var spawning_enabled: bool = false
+
+var active_spawn_points: Array = []
+
+var dynamic_enemy_cap := 120
+var min_enemy_cap := 80
+var max_enemy_cap := 150
 
 var fps_timer := 0.0
 
@@ -23,7 +32,14 @@ var victory_shown := false
 
 var boss_spawned := false
 
+func _ready():
+	add_to_group("enemy_spawner")
+	set_stage_1()
+	
 func _process(delta):
+
+	if not spawning_enabled:
+		return
 
 	timer += delta
 	game_time += delta
@@ -58,8 +74,7 @@ func _process(delta):
 		try_spawn()
 
 
-	if game_time >= 5 and not boss_spawned:
-		print('SPAWNANDO BOSS')
+	if game_time >= 480 and not boss_spawned:
 		spawn_boss()
 		boss_spawned = true
 # ------------------------------
@@ -104,8 +119,6 @@ func try_spawn():
 
 	for d in directions_count:
 
-		var base_angle = randf() * TAU
-		var direction = Vector2.RIGHT.rotated(base_angle)
 
 		for i in enemy_count:
 
@@ -115,19 +128,22 @@ func try_spawn():
 			var enemy = standard_enemy_scene.instantiate()
 			var t = choose_enemy_type()
 
-			# seta o tipo no inimigo (0,1,2)
 			enemy.enemy_type = t
-			
+
 			get_tree().current_scene.add_child(enemy)
 
+			if active_spawn_points.is_empty():
+				return
 
-			# Cluster compacto
+			var spawn = active_spawn_points.pick_random()
+
 			var spread = Vector2(
-				randf_range(-150, 150),
-				randf_range(-150, 150)
+			randf_range(-120, 120),
+			randf_range(-120, 120)
 			)
 
-			enemy.global_position = player.global_position + direction * spawn_distance + spread
+			enemy.global_position = spawn.global_position + spread
+
 
 func get_spawn_weights():
 
@@ -225,8 +241,18 @@ func show_victory():
 
 	# ✅ mostra a UI
 	var layer = victory_scene.instantiate()
-	add_child(layer)
-	layer.get_node("VictoryUI").setup(game_time, EnemyManager.total_kills)
+	get_tree().current_scene.add_child(layer)
+	layer.setup(game_time, EnemyManager.total_kills)
 
 	# ✅ garante mouse livre pra clicar (caso seu jogo mexa nisso)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	
+
+func set_stage_1():
+	active_spawn_points = [north, north2]
+
+func set_stage_2():
+	active_spawn_points = [north, south, east]
+
+func set_stage_3():
+	active_spawn_points = [north, south, east, west]

@@ -1,0 +1,72 @@
+[gd_scene format=3 uid="uid://e014h7pxssi4"]
+
+[ext_resource type="Script" uid="uid://bakhgsrrv8fns" path="res://player.gd" id="1_b26j0"]
+[ext_resource type="Resource" uid="uid://c6ahft5gupgn2" path="res://data/characters/default.tres" id="2_n7ghd"]
+[ext_resource type="PackedScene" uid="uid://cle4j7r4vq32n" path="res://levelUpUI.tscn" id="3_nvl01"]
+[ext_resource type="PackedScene" uid="uid://cho2haaew4upj" path="res://heart.tscn" id="4_ivps1"]
+[ext_resource type="PackedScene" uid="uid://cecqhlteamnua" path="res://orb_companion.tscn" id="5_urp6f"]
+[ext_resource type="PackedScene" uid="uid://cnomop160xlwf" path="res://mine.tscn" id="6_bwjto"]
+[ext_resource type="PackedScene" uid="uid://cl4l25r2qlipx" path="res://turrent.tscn" id="7_606se"]
+[ext_resource type="Texture2D" uid="uid://clv8ttp87oiev" path="res://assets/icons/characters/dea02d-GTA5-2016-08-28-17-25-48-602.png" id="8_u1c27"]
+[ext_resource type="Texture2D" uid="uid://duvghh8b174g2" path="res://assets/icons/weapons/machine_gun.png" id="9_op7ga"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cegan"]
+size = Vector2(880.00073, 1280.0007)
+
+[node name="player" type="CharacterBody2D" unique_id=801135327 node_paths=PackedStringArray("hit_flash", "xp_bar", "level_label") groups=["player"]]
+process_mode = 1
+scale = Vector2(0.1, 0.1)
+script = ExtResource("1_b26j0")
+preview_character = ExtResource("2_n7ghd")
+hit_flash = NodePath("")
+xp_bar = NodePath("")
+level_label = NodePath("")
+levelup_ui_scene = ExtResource("3_nvl01")
+heart_scene = ExtResource("4_ivps1")
+orb_scene = ExtResource("5_urp6f")
+mine_scene = ExtResource("6_bwjto")
+turret_scene = ExtResource("7_606se")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1750891483]
+position = Vector2(4.9996986, -9.999908)
+scale = Vector2(1.3382355, 3.2898176)
+texture = ExtResource("8_u1c27")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1153498527]
+position = Vector2(-0.00024414063, -10)
+scale = Vector2(0.9999991, 0.9999991)
+shape = SubResource("RectangleShape2D_cegan")
+
+[node name="Weapon" type="Node2D" parent="." unique_id=1101188984]
+texture_filter = 1
+position = Vector2(3.0517578e-05, -1.9073486e-05)
+rotation = 2.0647423
+scale = Vector2(1, -1)
+
+[node name="Sprite2D" type="Sprite2D" parent="Weapon" unique_id=1597827971]
+z_index = 5
+position = Vector2(68.405365, 104.97955)
+rotation = -1.6161749
+scale = Vector2(20, 20)
+texture = ExtResource("9_op7ga")
+offset = Vector2(20, 0)
+
+[node name="Muzzle" type="Marker2D" parent="Weapon" unique_id=792482937]
+position = Vector2(-9.478678, -720.6318)
+
+[node name="AmmoLabel" type="Label" parent="." unique_id=931146239]
+offset_left = -220.00002
+offset_top = -1030.0
+offset_right = 82.754135
+offset_bottom = -703.53674
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 280
+metadata/_edit_use_anchors_ = true
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=870241711]
+zoom = Vector2(0.5, 0.5)
+position_smoothing_enabled = true
+position_smoothing_speed = 4.0
+
+[node name="ShootSound" type="AudioStreamPlayer2D" parent="." unique_id=1835287883]

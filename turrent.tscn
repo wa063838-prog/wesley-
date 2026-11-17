@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://cl4l25r2qlipx"]
+
+[ext_resource type="Script" uid="uid://blc2pjfnul2l" path="res://turrent.gd" id="1_tj6ks"]
+[ext_resource type="Texture2D" uid="uid://dhndk6beixqug" path="res://ERA Weapon Secondary (13).png" id="2_3gn8m"]
+[ext_resource type="PackedScene" uid="uid://bk203layg0tjf" path="res://bullet.tscn" id="2_xdasc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xdasc"]
+bg_color = Color(0.7058824, 0, 0.06666667, 1)
+
+[node name="Turrent" type="Node2D" unique_id=163807073]
+position = Vector2(154, 83)
+script = ExtResource("1_tj6ks")
+bullet_scene = ExtResource("2_xdasc")
+
+[node name="Timer" type="Timer" parent="." unique_id=1936481889]
+wait_time = 0.5
+autostart = true
+
+[node name="AmmoBar" type="ProgressBar" parent="." unique_id=1681845472]
+offset_left = -52.0
+offset_top = -35.0
+offset_right = 53.0
+offset_bottom = -31.0
+theme_override_styles/fill = SubResource("StyleBoxFlat_xdasc")
+max_value = 40.0
+value = 40.0
+show_percentage = false
+
+[node name="Body" type="Node2D" parent="." unique_id=236647022]
+
+[node name="Sprite2D" type="Sprite2D" parent="Body" unique_id=1524806324]
+position = Vector2(0, 1)
+scale = Vector2(2.28, 2.0555556)
+texture = ExtResource("2_3gn8m")
+
+[node name="muzzle" type="Marker2D" parent="Body" unique_id=1339908567]
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

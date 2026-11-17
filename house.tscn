@@ -1,0 +1,68 @@
+[gd_scene format=3 uid="uid://l0yxbk305185"]
+
+[ext_resource type="PackedScene" uid="uid://e014h7pxssi4" path="res://player.tscn" id="1_metfq"]
+[ext_resource type="Texture2D" uid="uid://ry71qm4o1ebs" path="res://download - 2026-01-02T211606.917.png" id="2_6syyc"]
+[ext_resource type="Script" uid="uid://cmtn6ghheff7t" path="res://door_exit.gd" id="2_o1325"]
+[ext_resource type="PackedScene" uid="uid://lxm273chfi3n" path="res://pause_menu.tscn" id="4_o1325"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_o1325"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o1325"]
+size = Vector2(1294, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vy7fe"]
+size = Vector2(2453.1257, 3171.8745)
+
+[node name="House" type="Node2D" unique_id=500155720]
+
+[node name="player" parent="." unique_id=801135327 instance=ExtResource("1_metfq")]
+
+[node name="Walls" type="Node2D" parent="." unique_id=186741504]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Walls" unique_id=790413455]
+physics_material_override = SubResource("PhysicsMaterial_o1325")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/StaticBody2D" unique_id=66665255]
+position = Vector2(642, 711)
+shape = SubResource("RectangleShape2D_o1325")
+
+[node name="Door" type="Node2D" parent="." unique_id=1256633965 node_paths=PackedStringArray("interaction_label")]
+position = Vector2(1160, -90.99997)
+scale = Vector2(0.4, 0.4)
+script = ExtResource("2_o1325")
+destination_scene = "uid://2m34q7fd0i4n"
+interaction_label = NodePath("InteractionLabel")
+
+[node name="Sprite2D" type="Sprite2D" parent="Door" unique_id=818202266]
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_6syyc")
+
+[node name="InteractionArea" type="Area2D" parent="Door" unique_id=114341559]
+scale = Vector2(0.4, 0.4)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Door/InteractionArea" unique_id=2043247481]
+position = Vector2(-9.375, 34.37494)
+scale = Vector2(0.4, 0.4)
+shape = SubResource("RectangleShape2D_vy7fe")
+
+[node name="InteractionLabel" type="Label" parent="Door" unique_id=57655562]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -175.0
+offset_top = 32.499916
+offset_right = 25.0
+offset_bottom = 106.499916
+grow_horizontal = 2
+grow_vertical = 2
+text = "(E) Sair"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=2113267698]
+visible = false
+
+[node name="PauseMenu" parent="CanvasLayer" unique_id=1858237990 instance=ExtResource("4_o1325")]
+metadata/_edit_use_anchors_ = true
+
+[connection signal="body_entered" from="Door/InteractionArea" to="Door" method="_on_interaction_area_body_entered"]
+[connection signal="body_exited" from="Door/InteractionArea" to="Door" method="_on_interaction_area_body_exited"]

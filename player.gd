@@ -11,8 +11,6 @@ extends CharacterBody2D
 		preview_character = value
 		update_visual()
 
-
-
 @export var max_health : int = 3
 @export var speed = 500.0
 @export var invincibility_time: float = 0.6
@@ -31,6 +29,8 @@ extends CharacterBody2D
 @onready var muzzle: Marker2D = $Weapon/Muzzle
 @export var mine_scene: PackedScene
 @onready var shoot_sound: AudioStreamPlayer2D = $ShootSound
+@export var turret_scene: PackedScene
+@onready var scrap_label = get_tree().get_first_node_in_group("scrap_ui")
 
 var mine_enabled := false
 var mine_kill_counter := 0
@@ -39,6 +39,11 @@ var mine_damage := 1.5
 var mine_radius := 90.0
 var mine_delay := 0.6
 var mine_kill_requirement = 10
+
+var scrap := 0
+var turret_count := 0
+var max_turrets := 3
+var turret_cost := 10
 
 @export var default_weapon: WeaponData
 var current_weapon: WeaponData
@@ -58,12 +63,12 @@ var xp = 0
 var lifesteal_chance := 0.0
 
 var stats = {
-	"damage": 1.0,
+	"damage": 0.0,
 	"speed": 500.0,
 	"magnet": 150.0
 }
 
-@onready var hearts_container = get_parent().get_node("ui/hearts")
+@onready var hearts_container = get_tree().get_first_node_in_group("hearts_container")
 
 var heart_full = preload("res://heart_full.png")
 var heart_empty = preload("res://heart_empty.png")
@@ -82,11 +87,50 @@ var airstrike_radius := 120.0
 # READY
 # ------------------------------------
 func _ready():
+	MusicManager.play_gameplay()
 	if Engine.is_editor_hint():
 		update_visual()
+		return
 
+	add_to_group("player")
+	process_mode = Node.PROCESS_MODE_PAUSABLE
 
-	process_mode = Node.PROCESS_MODE_ALWAYS
+	# ===== RESET DA RUN =====
+	max_health = 3
+	health = max_health
+
+	owned_upgrades.clear()
+
+	stats["damage"] = 0.0
+	stats["speed"] = 500.0
+	stats["magnet"] = 150.0
+
+	lifesteal_chance = 0.0
+
+	mine_enabled = false
+	mine_kill_counter = 0
+	mine_damage = 1.5
+	mine_radius = 90.0
+	mine_delay = 0.6
+	mine_kill_requirement = 10
+
+	airstrike_enabled = false
+	airstrike_kill_counter = 0
+	airstrike_kill_requirement = 20
+	airstrike_damage = 50
+	airstrike_radius = 120.0
+
+	scrap = 0
+	turret_count = 0
+
+	level = 1
+	xp = 0
+	xp_to_next_level = 10
+	total_kills = 0
+	survival_time = 0.0
+
+	if scrap_label:
+		scrap_label.text = "⚙ Scrap: " + str(scrap)
 
 	# ===== APLICA PERSONAGEM PRIMEIRO =====
 	if RunData.selected_character:
@@ -99,7 +143,8 @@ func _ready():
 			$Sprite2D.texture = RunData.selected_character.icon
 
 	# ===== APLICA ARMA =====
-	current_weapon = RunData.selected_weapon if RunData.selected_weapon else default_weapon
+	var base_weapon = RunData.selected_weapon if RunData.selected_weapon else default_weapon
+	current_weapon = base_weapon.duplicate(true)
 
 	if current_weapon:
 		if current_weapon.weapon_texture:
@@ -108,24 +153,31 @@ func _ready():
 			$Weapon/Sprite2D.texture = current_weapon.icon
 
 		$Weapon/Sprite2D.scale = Vector2.ONE * current_weapon.visual_scale
-	if current_weapon:
 		ammo_in_mag = current_weapon.mag_size
 		update_ammo_label()
+
 	# ===== AGORA DEFINE VIDA =====
 	health = max_health
 
-	# ===== CRIA CORAÇÕES =====
-	for i in range(max_health):
-		add_heart()
+	# ===== LIMPA E CRIA CORAÇÕES =====
+	print("CONTAINER DOS CORAÇÕES: ", hearts_container)
 
+	if hearts_container:
+		print("CAMINHO: ", hearts_container.get_path())
+	if hearts_container:
+		for child in hearts_container.get_children():
+			child.queue_free()
+
+		for i in range(max_health):
+			add_heart()
+
+	update_scrap_ui()
 	update_hearts()
 	update_level_label()
 	update_xp_bar()
+
 	if hit_flash:
 		hit_flash.modulate.a = 0.0
-
-
-
 
 func add_heart():
 	var new_heart = heart_scene.instantiate()
@@ -139,13 +191,16 @@ func update_hearts():
 	if hearts_container == null:
 		return
 
-	for i in range(hearts_container.get_child_count()):
-		var heart = hearts_container.get_child(i)
-		
-		if i < health:
-			heart.texture = heart_full
-		else:
-			heart.texture = heart_empty
+	var heart_index := 0
+
+	for child in hearts_container.get_children():
+		if child is TextureRect:
+			if heart_index < health:
+				child.texture = heart_full
+			else:
+				child.texture = heart_empty
+
+			heart_index += 1
 
 # ------------------------------------
 # INVENCIBILIDADE (PISCAR)
@@ -181,9 +236,12 @@ func take_damage(amount, source_position := Vector2.INF):
 	await get_tree().create_timer(0.005, true).timeout
 	Engine.time_scale = 1.0
 	
-	hit_flash.modulate.a = 0.1
-	await get_tree().create_timer(0.05, true).timeout
-	hit_flash.modulate.a = 0
+	if is_instance_valid(hit_flash):
+		hit_flash.modulate.a = 0.1
+		await get_tree().create_timer(0.05, true).timeout
+
+		if is_instance_valid(hit_flash):
+			hit_flash.modulate.a = 0.0
 	
 	# Aplicar knockback
 	if source_position != Vector2.INF:
@@ -295,7 +353,7 @@ func shoot():
 			dir = dir.rotated(ang)
 
 		bullet.direction = dir
-		bullet.damage = current_weapon.damage
+		bullet.damage = current_weapon.damage + stats["damage"]
 		bullet.max_distance = current_weapon.max_distance
 		bullet.pierce = current_weapon.pierce
 		bullet.rotation = dir.angle()
@@ -618,3 +676,70 @@ func spawn_airstrike():
 
 	# IMPORTANTE: passar o inimigo, não a posição
 	missile.setup(target, airstrike_damage, airstrike_radius)
+
+
+func _on_scientist_entrance_body_entered(body: Node2D) -> void:
+	pass # Replace with function body.
+
+	
+func add_scrap(amount):
+
+	scrap += amount
+	
+	update_scrap_ui()
+	
+func _input(event):
+
+	# =========================
+	# ⏸️ PAUSE (ESC)
+	# =========================
+	if event.is_action_pressed("ui_cancel"):
+		var pause_menu = get_tree().get_first_node_in_group("pause_menu")
+
+		if pause_menu:
+			if get_tree().paused:
+				pause_menu.close()
+			else:
+				pause_menu.open()
+
+		return
+
+
+	# ⛔ bloqueia resto se estiver pausado
+	if get_tree().paused:
+		return
+
+
+	# =========================
+	# 🛠️ BUILD TURRET
+	# =========================
+	if event.is_action_pressed("build_turret"):
+
+		if turret_count >= max_turrets:
+			return
+
+		if scrap < turret_cost:
+			return
+
+		build_turret()
+
+		scrap -= turret_cost
+		turret_count += 1
+
+		update_scrap_ui()
+
+func build_turret():
+
+	if turret_scene == null:
+		return
+
+	var turret = turret_scene.instantiate()
+
+	get_tree().current_scene.add_child(turret)
+
+	turret.global_position = global_position + Vector2(40,0)
+	
+func update_scrap_ui():
+
+	if scrap_label:
+		scrap_label.text = "⚙ Scrap: " + str(scrap)

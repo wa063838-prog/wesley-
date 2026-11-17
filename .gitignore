@@ -1,3 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+/tente_sobreviver.exe
+/tente_sobreviver.console.exe
+/tente_sobreviver.pck
+/*.tmp

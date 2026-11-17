@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://b5eon8uhmeoky"]
+
+[ext_resource type="Script" uid="uid://dx4tkkl6umul8" path="res://loading_screen.gd" id="1_mggpi"]
+
+[node name="LoadingScreen" type="Control" unique_id=1457529140]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mggpi")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1651446617]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.005999994, 0, 0.03, 1)
+
+[node name="Label" type="Label" parent="." unique_id=1697752772]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+offset_right = 104.0
+grow_vertical = 0
+text = "Carregando..."

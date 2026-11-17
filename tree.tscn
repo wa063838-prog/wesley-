@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://blygftvrlkp3n"]
+
+[ext_resource type="Texture2D" uid="uid://b2w0y46lpig55" path="res://pine-tree-isaiah658.png" id="1_brfkd"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nnvrw"]
+radius = 60.0
+height = 120.0
+
+[node name="Tree" type="StaticBody2D" unique_id=196478568]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=65365469]
+z_index = 10
+texture_filter = 1
+position = Vector2(155.5, -351.49997)
+scale = Vector2(10.059999, 9.573171)
+texture = ExtResource("1_brfkd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1936107988]
+position = Vector2(154, -49)
+shape = SubResource("CapsuleShape2D_nnvrw")
+
+[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="." unique_id=1455631167]
+vertices = PackedVector2Array(118, -104, 135, -107, 151, -112, 170, -109, 185, -105, 198, -92, 208, -76, 208, -56, 210, -42, 218, -29, 231, -16, 244, -7, 231, 0, 214, 9, 191, 18, 171, 22, 145, 23, 124, 16, 109, 10, 93, 2, 87, -8, 85, -17, 85, -29, 100, -40, 115, -57, 120, -68, 119, -81, 119, -98)

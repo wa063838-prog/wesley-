@@ -1,91 +1,176 @@
 [gd_scene format=3 uid="uid://d1wihlulo38hs"]
 
 [ext_resource type="Script" uid="uid://bmj5tvcykpigl" path="res://EscolhaPersonagem.gd" id="1_mlxeo"]
-[ext_resource type="Resource" uid="uid://bqab14d64bdsb" path="res://data/characters/tank.tres" id="2_wjkfx"]
-[ext_resource type="Resource" uid="uid://cc6dan58pe0v1" path="res://data/characters/speed.tres" id="3_4601s"]
-[ext_resource type="Texture2D" uid="uid://pitgg3jiwt02" path="res://assets/icons/characters/tank.jpg" id="4_17ht3"]
-[ext_resource type="Texture2D" uid="uid://cu1ntcc55q2r5" path="res://assets/icons/characters/speed.jpg" id="5_1f87o"]
-[ext_resource type="Texture2D" uid="uid://bf2cem1tnaqpa" path="res://assets/icons/characters/padrao.jpg" id="6_20o0x"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_npc8n"]
-load_path = "res://.godot/imported/padrao.jpg-67038c5076d3ea6658a47eaaa78cac34.ctex"
+[ext_resource type="Resource" uid="uid://bqab14d64bdsb" path="res://data/characters/tank.tres" id="2_20o0x"]
+[ext_resource type="Resource" uid="uid://cc6dan58pe0v1" path="res://data/characters/speed.tres" id="3_npc8n"]
+[ext_resource type="Texture2D" uid="uid://d1sqq3hq3s6cd" path="res://assets/icons/characters/img1.png" id="4_17ht3"]
+[ext_resource type="Resource" uid="uid://c6ahft5gupgn2" path="res://data/characters/default.tres" id="4_vrdih"]
+[ext_resource type="Texture2D" uid="uid://vcs0p0dn84en" path="res://assets/icons/characters/images.png" id="5_1f87o"]
+[ext_resource type="AudioStream" uid="uid://de4djyqg1jxa7" path="res://audio/mouseclick.wav" id="5_rfxfm"]
+[ext_resource type="Texture2D" uid="uid://clv8ttp87oiev" path="res://assets/icons/characters/dea02d-GTA5-2016-08-28-17-25-48-602.png" id="6_20o0x"]
 
 [node name="EscolhaPersonagem" type="Control" unique_id=1424716795]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 1901.0
-offset_bottom = 939.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_mlxeo")
-tank = ExtResource("2_wjkfx")
-speed_char = ExtResource("3_4601s")
+tank_data = ExtResource("2_20o0x")
+speed_data = ExtResource("3_npc8n")
+padrao_data = ExtResource("4_vrdih")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1254372993]
-layout_mode = 0
-offset_left = 216.0
-offset_top = 1.0
-offset_right = 450.0
-offset_bottom = 100.0
-
-[node name="Escolha o Persongem" type="Label" parent="VBoxContainer" unique_id=1571714951]
-layout_mode = 2
-theme_override_font_sizes/font_size = 25
+[node name="Escolha o Persongem" type="Label" parent="." unique_id=1571714951]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.037
+anchor_right = 0.037
+offset_left = -37.36
+offset_top = 13.0
+offset_right = 221.64
+offset_bottom = 48.0
+theme_override_font_sizes/font_size = 34
 text = "escolher personagem"
 
-[node name="Tank" type="TextureButton" parent="VBoxContainer/Escolha o Persongem" unique_id=1946470263]
-layout_mode = 0
-offset_left = -139.99998
-offset_top = 235.0
-offset_right = 660.0
-offset_bottom = 1273.0
-scale = Vector2(0.1, 0.1)
-texture_normal = ExtResource("4_17ht3")
-texture_pressed = ExtResource("4_17ht3")
-texture_hover = ExtResource("4_17ht3")
-texture_disabled = ExtResource("4_17ht3")
+[node name="PadraoBox" type="Panel" parent="." unique_id=2038131142]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 41.0
+offset_top = 342.0
+offset_right = -1054.0
+offset_bottom = -263.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Speed" type="TextureButton" parent="VBoxContainer/Escolha o Persongem" unique_id=1639879722]
+[node name="Padrao" type="TextureButton" parent="PadraoBox" unique_id=909060905]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 19.0
+offset_top = 17.999996
+offset_right = 528.9999
+offset_bottom = 292.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.2, 0.2)
+texture_normal = ExtResource("6_20o0x")
+texture_pressed = ExtResource("6_20o0x")
+texture_hover = ExtResource("6_20o0x")
+texture_disabled = ExtResource("6_20o0x")
+
+[node name="SpeedBox" type="Panel" parent="." unique_id=350219567]
 layout_mode = 0
-offset_left = -142.0
-offset_top = 94.0
-offset_right = 370.0
-offset_bottom = 862.0
-scale = Vector2(0.1, 0.1)
+offset_left = 43.0
+offset_top = 74.0
+offset_right = 224.0
+offset_bottom = 195.0
+
+[node name="Speed" type="TextureButton" parent="SpeedBox" unique_id=1639879722]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 19.0
+offset_right = 710.9999
+offset_bottom = 472.0
+scale = Vector2(0.2, 0.2)
 texture_normal = ExtResource("5_1f87o")
 texture_pressed = ExtResource("5_1f87o")
 texture_hover = ExtResource("5_1f87o")
 texture_disabled = ExtResource("5_1f87o")
 
-[node name="Padrao" type="TextureButton" parent="VBoxContainer/Escolha o Persongem" unique_id=909060905]
+[node name="TankBox" type="Panel" parent="." unique_id=2093685306]
 layout_mode = 0
-offset_left = -133.0
-offset_top = 421.0
-offset_right = 556.99994
-offset_bottom = 1381.0
-scale = Vector2(0.1, 0.1)
-texture_normal = ExtResource("6_20o0x")
-texture_pressed = ExtResource("6_20o0x")
-texture_hover = SubResource("CompressedTexture2D_npc8n")
-texture_disabled = ExtResource("6_20o0x")
+offset_left = 41.0
+offset_top = 210.0
+offset_right = 226.0
+offset_bottom = 325.0
 
-[node name="Começar" type="Button" parent="VBoxContainer/Escolha o Persongem" unique_id=794497959]
+[node name="Tank" type="TextureButton" parent="TankBox" unique_id=1946470263]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -67.0
+offset_top = -41.5
+offset_right = 622.9999
+offset_bottom = 388.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.2, 0.2)
+texture_normal = ExtResource("4_17ht3")
+texture_pressed = ExtResource("4_17ht3")
+texture_hover = ExtResource("4_17ht3")
+texture_disabled = ExtResource("4_17ht3")
+
+[node name="voltar" type="Button" parent="." unique_id=1336485688]
 layout_mode = 0
-offset_left = 927.0
-offset_top = 639.0
-offset_right = 1050.0
-offset_bottom = 704.0
+offset_left = 18.0
+offset_top = 677.0
+offset_right = 77.0
+offset_bottom = 708.0
+text = "voltar"
+
+[node name="Começar" type="Button" parent="." unique_id=794497959]
+layout_mode = 0
+offset_left = 1039.0
+offset_top = 365.0
+offset_right = 1125.0
+offset_bottom = 396.0
 text = "COMEÇAR"
 expand_icon = true
 
-[node name="voltar" type="Button" parent="VBoxContainer/Escolha o Persongem" unique_id=1336485688]
+[node name="NomePanel" type="Panel" parent="." unique_id=987645270]
 layout_mode = 0
-offset_left = -205.0
-offset_top = 680.0
-offset_right = -146.0
-offset_bottom = 711.0
-text = "voltar"
+offset_left = 607.0
+offset_top = 50.0
+offset_right = 844.0
+offset_bottom = 99.0
 
-[connection signal="pressed" from="VBoxContainer/Escolha o Persongem/Tank" to="." method="_on_tank_pressed"]
-[connection signal="pressed" from="VBoxContainer/Escolha o Persongem/Speed" to="." method="_on_speed_pressed"]
-[connection signal="pressed" from="VBoxContainer/Escolha o Persongem/Padrao" to="." method="_on_padrão_pressed"]
-[connection signal="pressed" from="VBoxContainer/Escolha o Persongem/Começar" to="." method="_on_começar_pressed"]
-[connection signal="pressed" from="VBoxContainer/Escolha o Persongem/voltar" to="." method="_on_voltar_pressed"]
+[node name="NomePersonagem" type="Label" parent="NomePanel" unique_id=1725472275]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 15.0
+offset_right = 49.0
+offset_bottom = 38.0
+
+[node name="DescriçãoPanel" type="Panel" parent="." unique_id=497355275]
+layout_mode = 0
+offset_left = 605.0
+offset_top = 108.0
+offset_right = 1130.0
+offset_bottom = 239.0
+
+[node name="DescricaoPersonagem" type="Label" parent="DescriçãoPanel" unique_id=1552863805]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 7.0
+offset_right = 48.0
+offset_bottom = 30.0
+
+[node name="StatsPanel" type="Panel" parent="." unique_id=1672432447]
+layout_mode = 0
+offset_left = 606.0
+offset_top = 256.0
+offset_right = 1130.0
+offset_bottom = 353.0
+
+[node name="StatsPersonagem" type="Label" parent="StatsPanel" unique_id=28207193]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 5.0
+offset_right = 46.0
+offset_bottom = 28.0
+
+[node name="ClickSound" type="AudioStreamPlayer" parent="." unique_id=667583590]
+stream = ExtResource("5_rfxfm")
+
+[connection signal="pressed" from="PadraoBox/Padrao" to="." method="_on_padrao_pressed"]
+[connection signal="pressed" from="SpeedBox/Speed" to="." method="_on_speed_pressed"]
+[connection signal="pressed" from="TankBox/Tank" to="." method="_on_tank_pressed"]
+[connection signal="pressed" from="voltar" to="." method="_on_voltar_pressed"]
+[connection signal="pressed" from="Começar" to="." method="_on_começar_pressed"]

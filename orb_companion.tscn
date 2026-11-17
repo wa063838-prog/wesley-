@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://cecqhlteamnua"]
 
 [ext_resource type="Script" uid="uid://bm8dv3hgirrrr" path="res://orb_companion.gd" id="1_4yftk"]
-[ext_resource type="Texture2D" uid="uid://yp3vwfgi51sn" path="res://orb_companion.png" id="2_amx7x"]
 [ext_resource type="PackedScene" uid="uid://bk203layg0tjf" path="res://bullet.tscn" id="2_tg63q"]
+[ext_resource type="Texture2D" uid="uid://cd6vlubfk4rvy" path="res://orb_red.png" id="3_tg63q"]
 
 [node name="Node2D" type="Node2D" unique_id=1956871276]
 scale = Vector2(0.08, 0.08)
@@ -15,6 +15,5 @@ search_interval = null
 bullet_scene = ExtResource("2_tg63q")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1672807449]
-position = Vector2(-12.499992, 0)
-scale = Vector2(2.1050348, 2.1728516)
-texture = ExtResource("2_amx7x")
+scale = Vector2(47.460938, 40.234375)
+texture = ExtResource("3_tg63q")

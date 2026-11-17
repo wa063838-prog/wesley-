@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="CharacterData" format=3 uid="uid://c6ahft5gupgn2"]
 
 [ext_resource type="Script" uid="uid://dymqqde6m6odx" path="res://data/character_data.gd" id="1_dcw1w"]
-[ext_resource type="Texture2D" uid="uid://bf2cem1tnaqpa" path="res://assets/icons/characters/padrao.jpg" id="1_irtnf"]
+[ext_resource type="Texture2D" uid="uid://clv8ttp87oiev" path="res://assets/icons/characters/dea02d-GTA5-2016-08-28-17-25-48-602.png" id="1_irtnf"]
 
 [resource]
 script = ExtResource("1_dcw1w")

@@ -1,12 +1,10 @@
 [gd_scene format=3 uid="uid://bo5dc5583noem"]
 
 [ext_resource type="Script" uid="uid://brxipxkkd5m86" path="res://collectibles.gd" id="1_4l2cn"]
-[ext_resource type="Texture2D" uid="uid://banbmajj44pwf" path="res://9f701bb5d27a05ad1bcac29d4f30a3b3.jpg" id="2_d1jtp"]
-[ext_resource type="Texture2D" uid="uid://ddgwp5rk615ks" path="res://430ad33bfb4c22844bb1bd027ebad14b.jpg" id="3_5lrkl"]
-[ext_resource type="Texture2D" uid="uid://dbxkoiu8domif" path="res://809c91ff4a680179c4eed39229748dc1.jpg" id="4_rj31a"]
-[ext_resource type="Texture2D" uid="uid://dco85bghacutu" path="res://df9a7ca5ab8e72cf564cb669493808e9.jpg" id="5_jub36"]
-[ext_resource type="Texture2D" uid="uid://pgne78dwspe" path="res://27dde66f0978631e85605e847bbfbe84.jpg" id="6_nve0d"]
-[ext_resource type="Texture2D" uid="uid://c0fa1k770neuc" path="res://d29cb8e129a96e2ce840bbfb0850139c.jpg" id="7_v7pam"]
+[ext_resource type="Texture2D" uid="uid://yykov76wdb10" path="res://colecionavel.jpg" id="2_5lxxg"]
+[ext_resource type="Script" uid="uid://ds56hkqbi2mke" path="res://BigImage.gd" id="3_to8er"]
+[ext_resource type="Texture2D" uid="uid://olm8x55qcha8" path="res://download.jpg" id="4_l3iqt"]
+[ext_resource type="Script" uid="uid://c6suqsvtmth25" path="res://texture_rect_6.gd" id="4_rcoyj"]
 
 [node name="Collectibles" type="Control" unique_id=712101041]
 layout_mode = 3
@@ -44,45 +42,62 @@ columns = 4
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/ScrollContainer/GridContainer" unique_id=1832274089]
 custom_minimum_size = Vector2(256, 256)
 layout_mode = 2
-texture = ExtResource("2_d1jtp")
 expand_mode = 5
 stretch_mode = 6
+script = ExtResource("3_to8er")
+front_texture = ExtResource("2_5lxxg")
+back_texture = ExtResource("4_l3iqt")
 
 [node name="TextureRect2" type="TextureRect" parent="VBoxContainer/ScrollContainer/GridContainer" unique_id=315211883]
 custom_minimum_size = Vector2(256, 256)
 layout_mode = 2
-texture = ExtResource("6_nve0d")
+texture = ExtResource("2_5lxxg")
 expand_mode = 5
 stretch_mode = 6
+script = ExtResource("3_to8er")
+front_texture = ExtResource("2_5lxxg")
+back_texture = ExtResource("4_l3iqt")
 
 [node name="TextureRect3" type="TextureRect" parent="VBoxContainer/ScrollContainer/GridContainer" unique_id=618330149]
 custom_minimum_size = Vector2(256, 256)
 layout_mode = 2
 size_flags_horizontal = 0
-texture = ExtResource("3_5lrkl")
+texture = ExtResource("2_5lxxg")
 expand_mode = 5
 stretch_mode = 6
+script = ExtResource("3_to8er")
+front_texture = ExtResource("2_5lxxg")
+back_texture = ExtResource("4_l3iqt")
 
 [node name="TextureRect4" type="TextureRect" parent="VBoxContainer/ScrollContainer/GridContainer" unique_id=1996847412]
 custom_minimum_size = Vector2(256, 256)
 layout_mode = 2
-texture = ExtResource("4_rj31a")
+texture = ExtResource("2_5lxxg")
 expand_mode = 5
 stretch_mode = 6
+script = ExtResource("3_to8er")
+front_texture = ExtResource("2_5lxxg")
+back_texture = ExtResource("4_l3iqt")
 
 [node name="TextureRect5" type="TextureRect" parent="VBoxContainer/ScrollContainer/GridContainer" unique_id=1750527452]
 custom_minimum_size = Vector2(256, 256)
 layout_mode = 2
-texture = ExtResource("7_v7pam")
+texture = ExtResource("2_5lxxg")
 expand_mode = 5
 stretch_mode = 6
+script = ExtResource("3_to8er")
+front_texture = ExtResource("2_5lxxg")
+back_texture = ExtResource("4_l3iqt")
 
 [node name="TextureRect6" type="TextureRect" parent="VBoxContainer/ScrollContainer/GridContainer" unique_id=247362582]
 custom_minimum_size = Vector2(256, 256)
 layout_mode = 2
-texture = ExtResource("5_jub36")
+texture = ExtResource("2_5lxxg")
 expand_mode = 5
 stretch_mode = 6
+script = ExtResource("4_rcoyj")
+front_texture = ExtResource("2_5lxxg")
+back_texture = ExtResource("4_l3iqt")
 
 [node name="Voltar" type="Button" parent="." unique_id=2071885502]
 layout_mode = 0

@@ -12,10 +12,15 @@ var steering_forces = {}  # dict[enemy] = {separation, alignment, cohesion}
 @export var cohesion_dist := 140.0
 const ADJUSTED_CELL_SIZE = 100
 
-func _process(_delta):
-	
+var debug_timer := 0.0
+
+func _process(delta):
 	enemies = enemies.filter(func(e): return is_instance_valid(e))
-	
+
+	debug_timer += delta
+	if debug_timer >= 1.0:
+		debug_timer = 0.0
+
 	frame_group = (frame_group + 1) % total_groups
 	update_all_grids()
 	compute_steering_forces()
@@ -52,17 +57,25 @@ func compute_steering_forces():
 	var align_d2 = alignment_dist * alignment_dist
 	var cohes_d2 = cohesion_dist * cohesion_dist
 
-	# Initialize force vectors for all enemies
 	for e in enemies:
-		if is_instance_valid(e):
-			steering_forces[e] = {"separation": Vector2.ZERO, "alignment": Vector2.ZERO, "cohesion": Vector2.ZERO}
+		if is_instance_valid(e) and e.player and is_instance_valid(e.player):
+			var dist_to_player = e.global_position.distance_to(e.player.global_position)
+			if dist_to_player <= e.full_ai_distance:
+				steering_forces[e] = {
+					"separation": Vector2.ZERO,
+					"alignment": Vector2.ZERO,
+					"cohesion": Vector2.ZERO
+				}
 
-	# Compute steering forces through spatial grid
 	for cell_key in grid.keys():
 		var list_a = grid[cell_key]
+
 		for e1 in list_a:
 			if not is_instance_valid(e1):
 				continue
+			if not steering_forces.has(e1):
+				continue
+
 			var sep_force = Vector2.ZERO
 			var align_dir = Vector2.ZERO
 			var cohesion_pos = Vector2.ZERO
@@ -74,15 +87,18 @@ func compute_steering_forces():
 					var other_cell = cell_key + Vector2i(ox, oy)
 					if not grid.has(other_cell):
 						continue
+
 					for e2 in grid[other_cell]:
 						if not is_instance_valid(e2) or e1 == e2:
 							continue
+						if not steering_forces.has(e2):
+							continue
+
 						var diff = e1.global_position - e2.global_position
 						var dist2 = diff.length_squared()
 						if dist2 == 0:
 							continue
 
-						# Separation (close neighbors only)
 						if dist2 < min_d2:
 							var dist = sqrt(dist2)
 							var overlap = min_d - dist
@@ -92,20 +108,19 @@ func compute_steering_forces():
 								push = push.normalized() * max_push
 							sep_force += push
 
-						# Alignment (velocity matching at medium distance)
 						if dist2 < align_d2:
-							if e2.has_method("gedt_direction") or "direction" in e2:
-								align_dir += e2.direction
-								align_count += 1
+							align_dir += e2.direction
+							align_count += 1
 
-						# Cohesion (move toward group center at larger distance)
 						if dist2 < cohes_d2:
 							cohesion_pos += e2.global_position
 							cohes_count += 1
 
 			steering_forces[e1]["separation"] = sep_force
+
 			if align_count > 0:
 				steering_forces[e1]["alignment"] = (align_dir / align_count).normalized() * 100.0
+
 			if cohes_count > 0:
 				var center = cohesion_pos / cohes_count
 				steering_forces[e1]["cohesion"] = (center - e1.global_position).normalized() * 80.0
@@ -143,5 +158,7 @@ func resolve_all_overlaps():
 				e.global_position += push
 				neighbor.global_position -= push
 
-func register_enemy(enemy): enemies.append(enemy)
+func register_enemy(enemy):
+	if not enemies.has(enemy):
+		enemies.append(enemy)
 func unregister_enemy(enemy): enemies.erase(enemy)

@@ -1,31 +1,38 @@
 [gd_scene format=3 uid="uid://4p1er60e32nd"]
 
 [ext_resource type="Script" uid="uid://b15s2iq2ikuug" path="res://enemy.gd" id="1_4gyqm"]
-[ext_resource type="Texture2D" uid="uid://ry71qm4o1ebs" path="res://download - 2026-01-02T211606.917.png" id="2_4gyqm"]
+[ext_resource type="PackedScene" uid="uid://ruxtv7t7pnkk" path="res://scrap.tscn" id="2_qi2p4"]
+[ext_resource type="Texture2D" uid="uid://b3tpn6n6lihja" path="res://gorila.jpg" id="3_qi2p4"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_4gyqm"]
-size = Vector2(840, 1166.6663)
+[sub_resource type="CircleShape2D" id="CircleShape2D_4gyqm"]
+radius = 440.31552
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_qi2p4"]
-size = Vector2(846.66705, 1166.666)
+[sub_resource type="CircleShape2D" id="CircleShape2D_qi2p4"]
+radius = 480.0463
 
-[node name="enemy" type="Node2D" unique_id=1378946546 groups=["enemy"]]
+[sub_resource type="CircleShape2D" id="CircleShape2D_iifgy"]
+radius = 514.0253
+
+[node name="enemy" type="CharacterBody2D" unique_id=1531978429 groups=["enemy"]]
 visibility_layer = 9
 position = Vector2(400, 300)
 scale = Vector2(0.15, 0.15)
+collision_layer = 3
+collision_mask = 3
 script = ExtResource("1_4gyqm")
+scrap_scene = ExtResource("2_qi2p4")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=21749270 groups=["enemy"]]
-light_mask = 1022
-visibility_layer = 1022
-position = Vector2(0, 43.33313)
-shape = SubResource("RectangleShape2D_4gyqm")
+light_mask = 1023
+visibility_layer = 1023
+position = Vector2(13.333374, 153.33333)
+shape = SubResource("CircleShape2D_4gyqm")
 debug_color = Color(0.8365947, 0.35144952, 0.4364019, 0.41960785)
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=146609192]
-position = Vector2(3.333374, 46.6667)
-scale = Vector2(1.0117648, 0.944713)
-texture = ExtResource("2_4gyqm")
+position = Vector2(9.999889, 159.99994)
+scale = Vector2(4.7038918, 3.6979167)
+texture = ExtResource("3_qi2p4")
 
 [node name="DamageArea" type="Area2D" parent="." unique_id=1717078441]
 collision_layer = 8
@@ -33,7 +40,28 @@ collision_layer = 8
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea" unique_id=912738919 groups=["enemy"]]
 light_mask = 1022
 visibility_layer = 1022
-position = Vector2(-3.3327637, 43.332886)
-shape = SubResource("RectangleShape2D_qi2p4")
+position = Vector2(6.6666656, 153.33325)
+shape = SubResource("CircleShape2D_qi2p4")
+
+[node name="RayCast2D" type="RayCast2D" parent="." unique_id=2073623585]
+position = Vector2(6.6666665, 86.666664)
+target_position = Vector2(473.33325, 13.333496)
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=478430479 groups=["enemy"]]
+path_desired_distance = 50.0
+target_desired_distance = 30.0
+avoidance_enabled = true
+radius = 14.0
+neighbor_distance = 80.0
+time_horizon_agents = 1.2
+
+[node name="SeparetionArea" type="Area2D" parent="." unique_id=873950422]
+collision_layer = 2
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SeparetionArea" unique_id=1941158988]
+position = Vector2(-6.666668, 139.99998)
+shape = SubResource("CircleShape2D_iifgy")
 
 [connection signal="body_entered" from="DamageArea" to="." method="_on_damage_area_body_entered"]
+[connection signal="body_exited" from="DamageArea" to="." method="_on_damage_area_body_exited"]

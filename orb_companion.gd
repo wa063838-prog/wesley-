@@ -47,12 +47,12 @@ func _process(delta):
 func update_nearby_enemies():
 	nearby_enemies.clear()
 
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in get_tree().get_nodes_in_group("enemies"):
 		if not is_instance_valid(e):
 			continue
 		
 		var dist = global_position.distance_to(e.global_position)
-		if dist <= 9999:
+		if dist <= 600:
 			nearby_enemies.append(e)
 
 # ------------------------------
